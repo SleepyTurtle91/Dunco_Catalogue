@@ -1,0 +1,1572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DUNCO GROUP - Refined Visual Product Catalogues</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: #0b0f19;
+      color: #334155;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Strict A4 Print & Screen Specifications */
+    .a4-page {
+      width: 210mm;
+      height: 297mm;
+      max-height: 297mm;
+      background: #ffffff;
+      margin: 0 auto 24px auto;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+      padding: 14mm 16mm 12mm 16mm;
+      box-sizing: border-box;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+    }
+
+    @media print {
+      body {
+        background: #ffffff !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .a4-page {
+        box-shadow: none !important;
+        margin: 0 !important;
+        width: 210mm !important;
+        height: 297mm !important;
+        max-height: 297mm !important;
+        padding: 12mm 15mm !important;
+        page-break-after: always !important;
+        page-break-inside: avoid !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      @page {
+        size: A4 portrait;
+        margin: 0;
+      }
+    }
+
+    /* Modal & Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #111827;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #374151;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased">
+
+  <!-- Interactive Control Header -->
+  <header class="no-print bg-slate-900 border-b border-slate-800 text-white sticky top-0 z-50 px-4 py-2.5 shadow-lg">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+      
+      <!-- Brand & Sector Indicator -->
+      <div class="flex items-center space-x-3">
+        <div class="h-9 w-9 rounded-lg bg-blue-600 flex items-center justify-center font-black text-lg text-white shadow-md shadow-blue-500/20">
+          D
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-xs font-black tracking-wider text-slate-100 uppercase">DUNCO SDN BHD</h1>
+            <span class="text-[9px] bg-blue-900/60 text-blue-300 border border-blue-700/50 px-1.5 py-0.5 rounded font-semibold uppercase">Sabah B2B</span>
+          </div>
+          <p class="text-[11px] text-slate-400 font-medium">B2B Product Range Guide &bull; Verified AutoCount Data Mapping</p>
+        </div>
+      </div>
+
+      <!-- Catalogue Selector (Exact Order: 1 to 6) -->
+      <div class="flex items-center gap-2">
+        <label for="catalogSelect" class="text-xs text-slate-400 font-medium hidden md:inline">Active Sector:</label>
+        <select id="catalogSelect" onchange="switchCatalog(this.value)" class="bg-slate-800 border border-slate-700 text-white text-xs rounded-lg px-3 py-1.5 font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none">
+          <option value="0">01. Retailers & Stationery Resellers</option>
+          <option value="1">02. Offices & Accounting Firms</option>
+          <option value="2">03. Printing Companies & Print Shops</option>
+          <option value="3">04. Schools & Education Providers</option>
+          <option value="4">05. Logistics & Distribution Companies</option>
+          <option value="5">06. Clinics & Healthcare Providers</option>
+          <option value="all">★ All 6 Catalogues (Full Batch - 18 Pages)</option>
+        </select>
+      </div>
+
+      <!-- Action & Audit Tools -->
+      <div class="flex items-center space-x-2">
+        <button onclick="openModal('directoryModal')" class="bg-emerald-700 hover:bg-emerald-600 text-white border border-emerald-600 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition shadow-sm">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <span>Browse Full Sorted Item List</span>
+        </button>
+        <button onclick="openModal('auditModal')" class="bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition">
+          <i class="fa-solid fa-list-check text-blue-400"></i>
+          <span>Data & QA Audits</span>
+        </button>
+        <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-500 text-white px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-2 shadow-md shadow-blue-500/25 transition">
+          <i class="fa-solid fa-print"></i>
+          <span>Print / Export PDF</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Main Viewer Container -->
+  <main class="flex-1 py-8 px-4 overflow-y-auto flex flex-col items-center bg-slate-950">
+    <div id="pagesContainer" class="w-full flex flex-col items-center">
+      <!-- Injected dynamically via JavaScript -->
+    </div>
+  </main>
+  <!-- Audit Modal Dialog (Product Mapping, Image Audit & QA Checklist) -->
+  <div id="auditModal" class="no-print fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-xl max-w-4xl w-full max-h-[88vh] flex flex-col text-slate-200 shadow-2xl overflow-hidden">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between px-6 py-4 border-b border-slate-800 bg-slate-950/50">
+        <div class="flex items-center gap-3">
+          <div class="p-2 bg-blue-600/20 text-blue-400 rounded-lg">
+            <i class="fa-solid fa-clipboard-check text-base"></i>
+          </div>
+          <div>
+            <h2 class="text-sm font-bold text-white uppercase tracking-wide">DUNCO Catalogue Quality & Validation Audit</h2>
+            <p class="text-xs text-slate-400">Traceability audit against AutoCount descriptions, categorization fix, and asset verification</p>
+          </div>
+        </div>
+        <button onclick="closeModal('auditModal')" class="text-slate-400 hover:text-white text-lg">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Modal Tabs -->
+      <div class="flex border-b border-slate-800 px-6 pt-2 bg-slate-900/60">
+        <button onclick="switchAuditTab('mappingTab')" id="btn-mappingTab" class="audit-tab-btn px-4 py-2 text-xs font-semibold border-b-2 border-blue-500 text-white transition">Product Mapping Matrix</button>
+        <button onclick="switchAuditTab('imageTab')" id="btn-imageTab" class="audit-tab-btn px-4 py-2 text-xs font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition">Image & Visual Reference Audit</button>
+        <button onclick="switchAuditTab('qaTab')" id="btn-qaTab" class="audit-tab-btn px-4 py-2 text-xs font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition">Quality Assurance Verification Report</button>
+      </div>
+
+      <!-- Modal Content Body -->
+      <div class="flex-1 overflow-y-auto p-6 text-xs space-y-4">
+        
+        <!-- Tab 1: Product Mapping Matrix -->
+        <div id="mappingTab" class="audit-tab-pane block">
+          <div class="bg-blue-950/40 border border-blue-800/40 p-3 rounded-lg text-slate-300 mb-4">
+            <strong class="text-blue-300">Categorization Correction Applied:</strong>
+            <ul class="list-disc pl-4 mt-1 space-y-0.5 text-[11px] text-slate-300">
+              <li><strong>Files & Folders:</strong> Relocated from "Paper" to dedicated "Filing, Document Handling & Record Storage" across all catalogues.</li>
+              <li><strong>Ribbons & Retail Add-ons:</strong> Fancy ribbons and retail labellers removed from "Printer Consumables & Ink" and reassigned to "Retail Packaging & Pricing Accessories" or omitted from non-retail catalogues.</li>
+              <li><strong>Notebooks & Pads:</strong> Reassigned from "Computers & Office IT" to "Paper, Exercise Books & Writing Supplies".</li>
+              <li><strong>Suria & Medical Disclaimers:</strong> Strictly no unverified medical supplies or pricing are listed.</li>
+            </ul>
+          </div>
+          
+          <div class="overflow-x-auto border border-slate-800 rounded-lg">
+            <table class="w-full text-left text-[11px] border-collapse">
+              <thead class="bg-slate-800/80 text-slate-300 font-semibold border-b border-slate-700">
+                <tr>
+                  <th class="p-2.5">Target Catalogue</th>
+                  <th class="p-2.5">Assigned Validated Category</th>
+                  <th class="p-2.5">Source Product Description (AutoCount / Min Kiang)</th>
+                  <th class="p-2.5">Status</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-800 text-slate-300" id="auditTableBody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Tab 2: Image & Visual Audit -->
+        <div id="imageTab" class="audit-tab-pane hidden">
+          <div class="space-y-3">
+            <div class="bg-amber-950/30 border border-amber-800/40 p-3 rounded-lg text-[11px] text-amber-200 leading-relaxed">
+              <strong>Honest Visual Labelling:</strong> Per strict instructions, all visual assets are labeled as <em>"Representative 2D technical vector reference"</em>. They reflect accurate form factors, physical dimensions, and markings without claiming to be direct manufacturer photos.
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="imageAuditGrid">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 3: QA Report -->
+        <div id="qaTab" class="audit-tab-pane hidden text-[11px] space-y-4">
+          <div class="bg-slate-800/50 p-4 rounded-lg border border-slate-700/60 space-y-2">
+            <h3 class="font-bold text-white text-xs uppercase flex items-center gap-2">
+              <i class="fa-solid fa-circle-check text-emerald-400"></i>
+              DUNCO B2B Catalogue Quality Assurance Checklist
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-2">
+              <div class="bg-slate-900 p-2.5 rounded border border-slate-800 flex items-start gap-2">
+                <i class="fa-solid fa-check text-emerald-400 mt-0.5"></i>
+                <div>
+                  <span class="font-bold text-slate-200">Catalogues in Exact Requested Order:</span>
+                  <p class="text-slate-400 text-[10px]">1. Retailers &bull; 2. Offices &bull; 3. Printing &bull; 4. Schools &bull; 5. Logistics &bull; 6. Clinics</p>
+                </div>
+              </div>
+              <div class="bg-slate-900 p-2.5 rounded border border-slate-800 flex items-start gap-2">
+                <i class="fa-solid fa-check text-emerald-400 mt-0.5"></i>
+                <div>
+                  <span class="font-bold text-slate-200">Zero Unapproved Prices / Costs:</span>
+                  <p class="text-slate-400 text-[10px]">Strict "Quotation Available Upon Request" policy followed. No internal AutoCount margins shown.</p>
+                </div>
+              </div>
+              <div class="bg-slate-900 p-2.5 rounded border border-slate-800 flex items-start gap-2">
+                <i class="fa-solid fa-check text-emerald-400 mt-0.5"></i>
+                <div>
+                  <span class="font-bold text-slate-200">Strict Page Integrity & No Blank Pages:</span>
+                  <p class="text-slate-400 text-[10px]">Each catalogue consists of exactly 3 pages. Header, Categories, and Quotation page.</p>
+                </div>
+              </div>
+              <div class="bg-slate-900 p-2.5 rounded border border-slate-800 flex items-start gap-2">
+                <i class="fa-solid fa-check text-emerald-400 mt-0.5"></i>
+                <div>
+                  <span class="font-bold text-slate-200">Sabah B2B Call-to-Action Standard:</span>
+                  <p class="text-slate-400 text-[10px]">Clear placeholders for DUNCO Sales Representative, WhatsApp, and delivery locations.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="border border-slate-800 rounded-lg p-3 bg-slate-950">
+            <h4 class="font-bold text-slate-200 mb-1">Items Flagged for Review Prior to Quote:</h4>
+            <ul class="list-disc pl-4 text-slate-400 space-y-1 text-[10.5px]">
+              <li><strong>A3+ / Specialty Print Media:</strong> Marked "Subject to sourcing confirmation" under Printing Companies catalogue.</li>
+              <li><strong>Healthcare Consumables:</strong> Confirmed administrative paper, CCTV surveillance, and office equipment only. Zero non-verified pharmaceutical or clinical devices included.</li>
+              <li><strong>Suria-specific inventory:</strong> Not claimed or referenced separately.</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="px-6 py-3 border-t border-slate-800 bg-slate-950/70 flex justify-end">
+        <button onclick="closeModal('auditModal')" class="bg-slate-800 hover:bg-slate-700 text-white px-4 py-1.5 rounded-lg text-xs font-semibold transition">
+          Close Audit Window
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Interactive Master Product Directory Modal (Sorted by Business Model & Category, Zero Prices/Stock) -->
+  <div id="directoryModal" class="no-print fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-xl max-w-6xl w-full max-h-[90vh] flex flex-col text-slate-200 shadow-2xl overflow-hidden">
+      <!-- Header -->
+      <div class="flex flex-wrap items-center justify-between px-6 py-4 border-b border-slate-800 bg-slate-950/60 gap-3">
+        <div class="flex items-center gap-3">
+          <div class="p-2.5 bg-emerald-600/20 text-emerald-400 rounded-lg border border-emerald-500/30">
+            <i class="fa-solid fa-boxes-stacked text-base"></i>
+          </div>
+          <div>
+            <h2 class="text-sm font-bold text-white uppercase tracking-wide">Sorted Master Product Directory (Customer Lead Reference)</h2>
+            <p class="text-xs text-slate-400">Curated from MK Stock List & DUNCO AutoCount Master &bull; Prices & Stock Quantities Excluded</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <input type="text" id="dirSearchInput" oninput="filterDirectory()" placeholder="Search product, brand, or spec (e.g. Faber, Canon, A4, CCTV)..." class="bg-slate-800 border border-slate-700 text-white text-xs rounded-lg px-3 py-1.5 w-64 md:w-80 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+          <button onclick="closeModal('directoryModal')" class="text-slate-400 hover:text-white text-lg px-2">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Filter Pills -->
+      <div class="flex flex-wrap items-center gap-1.5 px-6 py-2.5 bg-slate-900 border-b border-slate-800 text-[11px]">
+        <span class="text-slate-400 font-semibold mr-1">Filter by Business Model:</span>
+        <button onclick="setDirFilter('all')" id="dirBtn-all" class="dir-filter-btn bg-emerald-600 text-white px-2.5 py-1 rounded-md font-semibold transition">All Sectors</button>
+        <button onclick="setDirFilter('retailers')" id="dirBtn-retailers" class="dir-filter-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-2.5 py-1 rounded-md font-medium transition">1. Retailers & Stationery</button>
+        <button onclick="setDirFilter('offices')" id="dirBtn-offices" class="dir-filter-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-2.5 py-1 rounded-md font-medium transition">2. Offices & Accounting</button>
+        <button onclick="setDirFilter('printing')" id="dirBtn-printing" class="dir-filter-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-2.5 py-1 rounded-md font-medium transition">3. Printing & Print Shops</button>
+        <button onclick="setDirFilter('schools')" id="dirBtn-schools" class="dir-filter-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-2.5 py-1 rounded-md font-medium transition">4. Schools & Education</button>
+        <button onclick="setDirFilter('logistics')" id="dirBtn-logistics" class="dir-filter-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-2.5 py-1 rounded-md font-medium transition">5. Logistics & Distribution</button>
+        <button onclick="setDirFilter('clinics')" id="dirBtn-clinics" class="dir-filter-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-2.5 py-1 rounded-md font-medium transition">6. Clinics & Healthcare</button>
+      </div>
+
+      <!-- Content Grid -->
+      <div class="flex-1 overflow-y-auto p-6 space-y-6" id="directoryContent">
+        <!-- Dynamically populated -->
+      </div>
+
+      <!-- Footer -->
+      <div class="px-6 py-3 border-t border-slate-800 bg-slate-950/70 flex justify-between items-center text-xs text-slate-400">
+        <span><i class="fa-solid fa-shield-halved text-emerald-400 mr-1"></i> 100% Verified DUNCO & Min Kiang Inventory &bull; Zero Price / Stock Exposure</span>
+        <button onclick="closeModal('directoryModal')" class="bg-slate-800 hover:bg-slate-700 text-white px-4 py-1.5 rounded-lg text-xs font-semibold transition">
+          Close Directory
+        </button>
+      </div>
+    </div>
+  </div>
+  <script>
+    const CATALOGUES = [
+      {
+        id: "retailers",
+        index: 1,
+        title: "Retailers & Stationery Resellers",
+        subtitle: "Fast-moving resale stationery, copy paper, pens, art supplies, files and retail pricing tools",
+        target: "Stationery shops, bookshops, mini markets, resellers, agents and general merchandise outlets in Sabah",
+        summary: "Stock your shelves with high-turnover branded stationery, writing instruments, student art supplies, and retail pricing equipment. Send us your required brand/model, specification, quantity and delivery location for a reseller quotation.",
+        categories: [
+          {
+            name: "Copy Paper, Exercise Books & Retail Pads",
+            caption: "A4 Copy Paper, Write-On Exercise Books & Sticky Notes",
+            visualKey: "paper_notebooks",
+            items: [
+              "DOUBLE A PPC A4 80GSM 500'S / PAPERONE PPC A4 80GSM 500'S",
+              "A ONE PPC A4 70GSM & 80GSM 500'S / SMART COPY PPC A4 80GSM 500'S",
+              "WRITE-ON F5 & A4 EXERCISE BOOK (80P / 100P / 120P / 200P) & PP COVER SERIES",
+              "CAMPAP SPIRAL & WIRE-O NOTEBOOK (A5 / A6 / A7) & 555 POCKET NOTEBOOK",
+              "ASTAR STICKY NOTES 100'S (1.5\"X2\", 2\"X3\", 3\"X3\", 3\"X4\", 3\"X5\") & NEON PADS"
+            ]
+          },
+          {
+            name: "Fast-Moving Pens, Pencils, Highlighters & Correction",
+            caption: "Faber-Castell, Pilot, Pentel, Stabilo & Artline Counter Stock",
+            visualKey: "pens_markers",
+            items: [
+              "FABER-CASTELL BALL PEN (NX23 / CLICK X5 & X7 / GRIP X5, X7, X10) & TRUE GEL / RX GEL",
+              "PILOT G2 GEL PEN (0.5 / 0.7 / 1.0), BP-1 RT BALL PEN & FRIXION CLICKER ERASABLE",
+              "PENTEL ENERGEL / ENERGEL-X / INFREE (0.5MM & 0.7MM) & UNI-BALL SIGNO UM-153 / 307",
+              "STABILO BOSS & SWING COOL HIGHLIGHTERS, FABER-CASTELL TEXTLINER 38 / 1546",
+              "PENTEL CORRECTION PEN (ZL62W / ZL31W), FABER-CASTELL GLIDE & ONE-TOUCH CORRECTOR",
+              "FABER-CASTELL TRI-GRIP & 1323 2B PENCILS, STABILO EXAM GRADE 2B PENCILS & ERASERS"
+            ]
+          },
+          {
+            name: "Student Art, Colouring, Adhesives & Craft Media",
+            caption: "Colour Pencils, Buncho Pastels, Campap Card & UHU/Artline Glue",
+            visualKey: "craft_paper",
+            items: [
+              "FABER-CASTELL, STABILO SWANS (12'S/24'S/36'S/48'S) & STAEDTLER LUNA COLOUR PENCILS",
+              "BUNCHO OIL PASTELS (12/16/24/36/48 COL), POSTER COLOURS & WATER COLOURS",
+              "CAMPAP A4 & B4 DRAWING BLOCKS (135GSM / 165GSM / 200GSM) & SKETCH BOOKS",
+              "CAMPAP COLOUR FLINT PAPER, PREMIUM CARD (120G–210G) & KIDARIO GLOSSY PHOTO PAPER",
+              "UHU GLUE STICK (8.2G / 21G), ALL-PURPOSE GLUE, ARTLINE GLUE STICK (8G / 25G / 40G)",
+              "SHAH'S SAIDINA, SAHIBBA, CHESS SETS, CONGKAK & TRADITIONAL INDOOR BOARD GAMES"
+            ]
+          },
+          {
+            name: "Files, Clear Books, Envelopes & Desk Organisers",
+            caption: "ABBA Arch Files, Kidario Clear Books & Retail Envelopes",
+            visualKey: "lever_arch",
+            items: [
+              "ABBA & BINDEE LEVER ARCH FILE 3\" F4, ABBA WHITE PVC 2D RING FILE A4 (25MM / 40MM / 50MM)",
+              "KIDARIO & THUNDER CLEAR BOOKS (10 / 20 / 30 / 40 / 60 / 80 / 100 POCKETS)",
+              "KIDARIO & EMI-FILE PVC L-FOLDERS, U-FOLDERS, DOCUMENT BAGS & MESH ZIPPER BAGS",
+              "CAMPAP & DOLPHIN WHITE / BROWN ENVELOPES (4\"X9\" WINDOW/NON-WINDOW, A4, 9\"X14\", 10\"X15\")",
+              "MAX STAPLERS (HD-10TD / HD-50) & STAPLES (NO.10-1M / NO.3-1M), ASTAR PUNCHERS & SCISSORS"
+            ]
+          },
+          {
+            name: "Retail Pricing Guns, Packaging & Counter Consumables",
+            caption: "MX Price Labellers, Cash Register Rolls, Tapes &Ink Cartridges",
+            visualKey: "labeller_ribbon",
+            items: [
+              "PRICE LABELLER MACHINE MX-5500 (1-LINE) & MX-6600 (2-LINE) + RM PRICE LABEL ROLL 800'S",
+              "SELF-ADHESIVE MULTIPURPOSE LABELS, THERMAL LABEL STICKER 100MMX150MM & CASH REGISTER ROLLS",
+              "KRAFT PAPER BAGS (S / M / L), OPP BAGS, STATIONERY CELLULOSE TAPE & OPP PACKING TAPES",
+              "18MM & 32MM FANCY RIBBON (GOLD LINE), GIFT BAGS & HOT MELT GLUE GUNS + REFILL STICKS",
+              "GENUINE CANON (PG-47 / CL-57 / GI-790), EPSON (003 / T664) & HP (680 / 682) RETAIL INKS"
+            ]
+          }
+        ]
+      },
+      {
+        id: "offices",
+        index: 2,
+        title: "Offices & Accounting Firms",
+        subtitle: "Corporate filing, audit archives, accounting books, business machines, printers and office IT",
+        target: "Accounting firms, audit & tax consultants, law firms, corporate offices, SMEs and administrative teams in Sabah",
+        summary: "Streamline corporate documentation, financial record archiving, printing workflows, and office workstation setups with verified commercial supplies.",
+        categories: [
+          {
+            name: "Audit Archiving, Lever Arch Binders & Filing Systems",
+            caption: "3\" Lever Arch Files, 2D/Q-Ring Binders, Box Files & Dividers",
+            visualKey: "lever_arch",
+            items: [
+              "BINDEE & KIDARIO ARCH FILE 3\" F4, ROYAL ARCH FILE 2\" F4 & ABBA BOX FILE / VOUCHER FILE 3\"",
+              "ABBA & K2 WHITE PVC 2D RING FILE A4 (25MM / 40MM / 50MM) & EMI-FILE Q-RING (65MM / 80MM)",
+              "CAMPAP & KIDARIO PVC INDEX DIVIDERS (5 / 10 / 12 / 20 COL, JAN–DEC, A–Z, 1–31)",
+              "ASTAR & KIDARIO 11-HOLE SHEET PROTECTORS A4 (100'S), MANAGEMENT FILES & POCKET FILES",
+              "DOCUMENT STORAGE BOXES (DB01 / DB02), 2/3-TIER DOCUMENT TRAYS & MAGAZINE RACKS"
+            ]
+          },
+          {
+            name: "Accounting Ledgers, Vouchers, Calculators & Stamps",
+            caption: "Casio Printing/Desktop Calculators, NCR Vouchers & Xstamper",
+            visualKey: "casio_calc",
+            items: [
+              "CASIO PRINTER CALCULATOR HR-8RC & HR-100RC (12-DIGIT), FINANCIAL FC-100V/200V & DESKTOP AX-120ST/GX-12B",
+              "CANON DESKTOP CALCULATORS (WS-1210Hi III / AS-220RTS / AS-1200) & PAYMASTER BILL COUNTER PM-160",
+              "BINDEE F4 LEDGER BOOK & CASH BOOK, CAMPAP OBLONG & FOOLSCAP BOOKS (120P / 200P / 300P / 400P)",
+              "PAYMENT VOUCHERS, SALARY VOUCHERS, JOURNAL VOUCHERS, PETTY CASH & OFFICIAL RECEIPT NCR BOOKS",
+              "XSTAMPER QUIX PRE-INKED STAMPS, ASTAR PAID/RECEIVED DATE STAMPS, ARTLINE STAMP PADS & COMMON SEALS",
+              "KIDARIO & SRM STEEL CASH BOXES (KEY & COMBINATION) & METAL WALL KEY BOXES (24 TO 200 KEYS)"
+            ]
+          },
+          {
+            name: "Copy Paper, Envelopes & Corporate Desk Stationery",
+            caption: "A4/A3 80GSM Paper, Window Envelopes & Executive Pens",
+            visualKey: "ringfile_covers",
+            items: [
+              "DOUBLE A, PAPERONE, A ONE & SMART COPY PPC A4 & A3 80GSM (500'S) & CONQUEROR 100GSM PAPER",
+              "CAMPAP & DOLPHIN WHITE & BROWN ENVELOPES (4\"X9\" WINDOW/PLAIN, 9\"X12.75\", 10\"X12\", 10\"X15\")",
+              "PILOT G2, PENTEL ENERGEL, FABER-CASTELL FAST GEL & LAMY / PARKER / SHEAFFER EXECUTIVE PENS",
+              "MAX HEAVY-DUTY STAPLERS (HD-50 / HD-12N/17 / HD-12N/24), 2-HOLE PUNCHERS & DOUBLE BINDER CLIPS",
+              "MKP & DELI PAPER SHREDDERS (SHP-S6A / SHP-S15 / DINO / EBA), LAMINATORS (A4/A3) & BINDING MACHINES"
+            ]
+          },
+          {
+            name: "Office Laser/InkTank Printers, Scanners & Original Consumables",
+            caption: "Canon, Brother, HP & Epson Business Printers & Toners",
+            visualKey: "printers_toners",
+            items: [
+              "CANON IMAGECLASS LASER (LBP6030 / LBP246DW / MF3010 / MF284DW / MF664CDW) & MAXIFY GX SERIES",
+              "BROTHER MONO & COLOUR LASER (HL-1210W / HL-L2460DW / DCP-L2640DW) & INKTANK (DCP-T730DW / MFC-T930DW)",
+              "EPSON ECOTANK (L3250 / L5290 / L6490 / L14150 A3) & DOT MATRIX (LQ-310 / LQ-590II / LQ-2190)",
+              "CANON & EPSON DOCUMENT SCANNERS (LIDE 300/400, DR-C240, DR-S150, EPSON DS-530II / ES-580W)",
+              "ORIGINAL CANON (325/337/054/069/071/GI-790), HP (85A/136A/215A/416A/682), BROTHER (TN-1000/2480/BTD60) & EPSON (003) CONSUMABLES"
+            ]
+          },
+          {
+            name: "Business Desktops, Laptops, Monitors, UPS & Software",
+            caption: "Dell/HP/Lenovo/Acer PCs, 24\"-27\" Monitors, UPS & Microsoft/AutoCount",
+            visualKey: "pc_ups",
+            items: [
+              "ACER VERITON / ASPIRE, DELL OPTIPLEX / PRO, HP PRO / OMNIDESK & LENOVO THINKCENTRE DESKTOPS & AIOS",
+              "DELL LATITUDE / PRO, HP PROBOOK / ELITEBOOK, LENOVO THINKPAD / IDEAPAD & ACER TRAVELMATE LAPTOPS",
+              "ACER, DELL, HP, SAMSUNG, AOC & VIEWSONIC 21.5\" / 23.8\" / 27\" FHD & QHD IPS OFFICE MONITORS",
+              "PROLINK & KOSS LINE-INTERACTIVE & ONLINE UPS (700VA / 800VA / 1200VA / 1500VA / 2000VA / 3000VA) & AVRS",
+              "MICROSOFT OFFICE HOME & BUSINESS 2024, WINDOWS 11 PRO, AUTOCOUNT ACCOUNTING & KASPERSKY / ESET SECURITY",
+              "LOGITECH & MIXIE KEYBOARD/MOUSE COMBOS, KINGSTON USB DRIVES, SEAGATE/WD EXTERNAL HDDS & SYNOLOGY NAS"
+            ]
+          }
+        ]
+      },
+      {
+        id: "printing",
+        index: 3,
+        title: "Printing Companies & Print Shops",
+        subtitle: "Bulk paper, card stock, photo & vinyl media, binding supplies, wide-format inks and finishing equipment",
+        target: "Commercial printers, photocopy & binding centres, graphic design studios, signage shops and print-service providers",
+        summary: "Reliable paper grammages, colour PPC reams, photo and sticker media, binding combs/covers, digital duplicator supplies, and production ink/toner consumables.",
+        categories: [
+          {
+            name: "Bulk Copy Paper, Colour PPC Reams & Specialty Card Stock",
+            caption: "A4/A3 70G-80G Paper, Lucky Star/Ten-Q Colour Reams & 120G-220G Card",
+            visualKey: "craft_paper",
+            items: [
+              "DOUBLE A, PAPERONE, A ONE, QUALITY & SMART COPY PPC A4 (70GSM & 80GSM) & A3 80GSM 500'S",
+              "TEN-Q, SINARSPECTRA & LUCKY STAR COLOUR PPC A4 450'S (PASTEL, DEEP & CYBER FLUORESCENT COLOURS)",
+              "SAKIRA A4 100'S CARD (120GSM 2-SHEET & 160GSM 3-SHEET) & CAMPAP PREMIUM CARD (120G / 140G / 160G / 180G / 210G)",
+              "MANILA CARD 20\"X25\" 230GSM (100'S), GOLD STAMPING CERTIFICATE CARDS A4 160GSM & CONQUEROR 100GSM",
+              "CAMPAP ARTO TRACING PAPER A4, BLACK PAPER (80G / 120G / 140G / 220G), MOUNTING BOARD & POLYFOAM BOARDS"
+            ]
+          },
+          {
+            name: "Photo Paper, Printable Sticker Media & Plotter Rolls",
+            caption: "Glossy/Matte/Embossed Photo Paper, Sticker Sheets & Vinyl Media",
+            visualKey: "photo_media",
+            items: [
+              "KIDARIO GLOSSY PHOTO PAPER A4 (115G / 135G 100'S & 180G / 210G / 230G / 260G 20'S) & A3 210G 20'S",
+              "DAMEID DOUBLE-SIDED GLOSSY PHOTO PAPER (180G / 230G A4) & AKAR EMBOSS / GLOSSY / MATTE PHOTO PAPER A4",
+              "KIDARIO STICKER PHOTO PAPER (150G A4 20'S & 180G A3 20'S) & ASTAR A4 85GSM WHITE STICKER 100'S",
+              "CANON PHOTO PAPER (GP-508 / PP-208 / PS-308R) & SISER GLOSSY / MATTE PRINTABLE VINYL STICKER A4",
+              "2\" PLOTTER PAPER ROLL A1 SIZE X 50M (LARGE FORMAT MEDIA SUBJECT TO SOURCING CONFIRMATION)"
+            ]
+          },
+          {
+            name: "Document Binding, Lamination & Print Finishing Equipment",
+            caption: "Binding Covers, PVC/Wire Combs, Laminating Film, Trimmers & Heavy Staplers",
+            visualKey: "binding_finishing",
+            items: [
+              "ASTAR TRANSPARENT BINDING COVER A4 100'S (0.15MM & 0.18MM) & G25/G30 BINDING SETS",
+              "PLASTIC BINDING COMBS (6MM TO 51MM) & WIRE BINDING COMBS (6.4MM TO 14.3MM)",
+              "ADORO, LIYOU & ASTAR LAMINATING FILM 100'S (ID CARD SIZES, A5, A4 & A3 100 MICRON)",
+              "DELI (3871 / 3872S) & SD BINDING MACHINES, MKP & DELI A4/A3 LAMINATING MACHINES",
+              "KW-TRIO POWER CUTTER #3941 & A0 ROTARY TRIMMER #3022, KIDARIO A4/A3 ROTARY TRIMMERS & WOOD/STEEL PAPER CUTTERS",
+              "MAX HEAVY-DUTY STAPLERS (12L/17, 12N/17, 12N/24) & HEAVY-DUTY STAPLES (1210 TO 1224) + CUTTING MATS (A4–A1)"
+            ]
+          },
+          {
+            name: "Production Inks, Toners, Copier Consumables & Duplicator Masters",
+            caption: "Canon ImagePROGRAF/Copier Toners, Epson 6-Colour Inks & Copyprinter",
+            visualKey: "printers_toners",
+            items: [
+              "CANON IMAGEPROGRAF LARGE FORMAT INKS (PFI-8120 / PFI-8320 / PFI-300 / PFI-5100 / PFI-050) & PRINTHEADS",
+              "CANON COPIER TONERS (NPG-51 / NPG-59 / NPG-67 / NPG-84 / NPG-88) & LASER TONERS (054 / 069 / 075 / 325)",
+              "EPSON 6-COLOUR PHOTO INKS (057 FOR L8050/L18050 & T673), 003, 001, 008 & MAINTENANCE BOXES (MC-G01/G02/G04)",
+              "HP DESIGNJET INKS (711 / 712 / 728), HP LASERJET TONERS (215A / 416A / 222A) & BROTHER TONERS/INK BOTTLES",
+              "COPYPRINTER MASTER (DX2430 / CPMT21) & COPYPRINTER INK (DX2430 / CPI10) FOR HIGH-VOLUME DUPLICATING"
+            ]
+          },
+          {
+            name: "A3+ / Wide-Format Printers, Cutters, NCR Forms & Design Software",
+            caption: "A3 Photo/InkTank Printers, Siser Cutter, Continuous NCR & Adobe/Corel",
+            visualKey: "ncr_books",
+            items: [
+              "CANON PIXMA PRO-200S / PRO-310 A3+, IX6770 / IX6870 A3, EPSON L18050 / L14150 A3 & BROTHER MFC-T4500DW / J3940DW A3",
+              "CANON IMAGEPROGRAF TC-20 / TM-5250 LARGE FORMAT PLOTTERS & CANON SISER JULIET 30CM HIGH-DEFINITION CUTTER",
+              "CONTINUOUS COMPUTER FORMS 9.5\"X11\" & 11\"X15\" (1-PLY TO 5-PLY NCR) & CAMPAP NCR BILL/INVOICE/DO/RECEIPT BOOKS",
+              "ASUS PROART & DELL / ACER IPS MONITORS, ADOBE CREATIVE CLOUD (PHOTOSHOP / ILLUSTRATOR) & CORELDRAW SUITE"
+            ]
+          }
+        ]
+      },
+      {
+        id: "schools",
+        index: 4,
+        title: "Schools & Education Providers",
+        subtitle: "Classroom stationery, textbooks, art supplies, sports equipment, projectors and school IT",
+        target: "Government and private schools, independent Chinese secondary schools, colleges, tuition centres and kindergartens in Sabah",
+        summary: "Comprehensive educational supply covering classroom teaching aids, exam stationery, student art and music, physical education sports gear, and school administrative IT.",
+        categories: [
+          {
+            name: "Exercise Books, Examination Sheets, Textbooks & Reference",
+            caption: "Exercise Books, Exam Pads, Oxford Fajar Kamus & School Workbooks",
+            visualKey: "paper_notebooks",
+            items: [
+              "WRITE-ON, KRAFT & BORNEOD EXERCISE BOOKS (F5 & A4: SINGLE LINE, 2/3/4-LINE, SMALL/MEDIUM/BIG SQUARE, 60P–200P)",
+              "CAMPAP & BORNEOD A4 EXAMINATION SHEETS & PADS (60GSM / 70GSM / 80GSM), GRAPH PAPER & FOOLSCAP BOOKS",
+              "CO-CURRICULUM POCKET NOTEBOOKS (PENGAKAP, KADET BOMBA, PBSM, PANDU PUTERI, PUTERI ISLAM, ST. JOHN)",
+              "KAMUS DWIBAHASA OXFORD FAJAR 6E, KSSM DBP / SASBADI / PELANGI / ILMU BAKTI WORKBOOKS, SPM PAST YEAR PAPERS & UEC TEXTBOOKS",
+              "ASTAR & DOLPHIN CLEAR/EMBOSSED EXERCISE & TEXTBOOK COVERS (PRE-CUT SHEETS & 5M/10M ROLLS)"
+            ]
+          },
+          {
+            name: "Whiteboards, Classroom Teaching Aids, Certificates & Badges",
+            caption: "Magnetic Whiteboards, Refillable Markers, Certificate Folders & Name Badges",
+            visualKey: "teaching_whiteboard",
+            items: [
+              "MAGNETIC WHITEBOARDS (1.5'X2' TO 4'X8'), MOBILE WHITEBOARD STANDS, CORK NOTICEBOARDS & SLIDING GLASS CABINETS",
+              "ARTLINE (500A / 509A), PILOT V-BOARD MASTER & FASTER / YOSOGO WHITEBOARD MARKERS, REFILL INKS, DUSTERS & CLEANERS",
+              "GOLD STAMPING & SPORT CERTIFICATE PAPER A4, PVC/HARDCOVER CERTIFICATE FOLDERS & SCROLL HOLDERS WITH TASSEL",
+              "STUDENT PERSONAL FILES (FAIL PERIBADI MURID), CLASS ATTENDANCE BOOKS (BUKU JADUAL KEDATANGAN) & REPORT FILES",
+              "PU LEATHER & PVC NAME BADGE HOLDERS, LANYARDS, MALAYSIA & SABAH FLAGS (3'X6', 2'X4', HAND FLAGS & BUNTING)"
+            ]
+          },
+          {
+            name: "Student Writing, Art & Craft, Science Kits & Music Instruments",
+            caption: "2B Exam Pencils, Math Sets, Buncho/Faber-Castell Art, Recorders & Globes",
+            visualKey: "pens_markers",
+            items: [
+              "FABER-CASTELL, STABILO & ASTAR 2B EXAM PENCILS, ERASERS, SHARPENERS, RULERS & OLYMPIA / ASTAR MATH GEOMETRY SETS",
+              "CASIO (FX-570MS / FX-570EX) & OLYMPIA (ES-570MS / ES-570EX) SCIENTIFIC CALCULATORS & ASTAR ABACUS",
+              "BUNCHO, FABER-CASTELL, STABILO SWANS & MASTER ART COLOUR PENCILS, OIL PASTELS, POSTER/WATER COLOURS & BRUSHES",
+              "CAMPAP DRAWING BLOCKS (A4 / B4 / A3 / A2 / A1), WOODEN EASELS, MODELLING CLAY, CRAFT STICKS & GLUE STICKS",
+              "YAMAHA YRS-23 & KIDARIO SOPRANO RECORDERS, MUSIC BOOKS, WORLD GLOBES (20CM–32CM) & STUDENT ELECTRICAL/SOLAR SCIENCE KITS"
+            ]
+          },
+          {
+            name: "Physical Education (PJPK), Sports Equipment & Co-Curricular Games",
+            caption: "Molten/Mikasa Balls, Yonex/RSL Badminton, Gajahmas Takraw & PE Cones",
+            visualKey: "sports_pe",
+            items: [
+              "MOLTEN BASKETBALLS, FOOTBALLS (VANTAGGIO), FUTSAL BALLS, NETBALLS, HANDBALLS & MIKASA / MOLTEN VOLLEYBALLS",
+              "YONEX & ASTAR BADMINTON RACKETS, RSL / YONEX / AMUSI SHUTTLECOCKS, STRINGS & OVERGRIPS",
+              "GAJAHMAS SEPAK TAKRAW BALLS & NETS, AERO FUTSAL / FOOTBALL / VOLLEYBALL / BADMINTON NETS & TABLE TENNIS TABLES/BATS",
+              "PLASTIC MARKER CONES (9\" / 15\"), 50-IN-1 DISC CONES, HULA HOOPS, SKIPPING ROPES, BALL PUMPS, WHISTLES & MEGAPHONES",
+              "SAHIBBA (BM/ENG), SAIDINA, SHAHS CHESS & CHECKERS, CONGKAK, CARROM BOARDS & SCRABBLE FOR SCHOOL CLUBS"
+            ]
+          },
+          {
+            name: "Classroom Projectors, Interactive Panels, Lab PCs & School Printers",
+            caption: "Epson/Acer Projectors, Projection Screens, Interactive Panels & Duplicators",
+            visualKey: "projector_monitor",
+            items: [
+              "EPSON (EB-E12 / EB-E24 / EB-W55 / EB-982W) & ACER (X1129 / X1223HP / X1328Wi / S1386) CLASSROOM PROJECTORS",
+              "MEKI & VENOVA TRIPOD, WALL & MOTORISED PROJECTION SCREENS (6FT 70\"X70\" TO 10FT 120\"X120\") & CEILING BRACKETS",
+              "VIEWSONIC (75\") & ISONIC (65\") INTERACTIVE FLAT PANELS WITH MOBILE TROLLEY STANDS & DYNAMAX PORTABLE PA SYSTEMS",
+              "ACER, DELL, HP & LENOVO DESKTOP PCS, ALL-IN-ONES, LAPTOPS, MONITORS, HEADSETS & LAB NETWORKING / UPS",
+              "EPSON / CANON / BROTHER INKTANK & LASER PRINTERS, LAMINATORS, HEAVY-DUTY STAPLERS & COPYPRINTER DX2430 CONSUMABLES"
+            ]
+          }
+        ]
+      },
+      {
+        id: "logistics",
+        index: 5,
+        title: "Logistics & Distribution Companies",
+        subtitle: "Delivery orders, continuous computer forms, packing tapes, barcode/label printers, dispatch IT and warehouse CCTV",
+        target: "Transport operators, freight forwarders, courier hubs, wholesale distributors, plantations and warehouse teams in Sabah",
+        summary: "Keep your dispatch and warehouse operations moving with triplicate Delivery Orders, dot-matrix printers and ribbons, heavy-duty packing tapes, barcode scanners, and 24/7 CCTV surveillance.",
+        categories: [
+          {
+            name: "Delivery Orders, NCR Books, Logbooks & Continuous Computer Forms",
+            caption: "Campap DO/PO/Invoice NCR Books, Despatch Books & 1-5 Ply Computer Forms",
+            visualKey: "ncr_books",
+            items: [
+              "CAMPAP NCR DELIVERY ORDER (25X3), PURCHASE ORDER (25X3), INVOICE BOOK (25X3) & BILL/RECEIPT BOOKS (2P & 3P)",
+              "CONTINUOUS COMPUTER FORMS 9.5\"X11\" & 11\"X15\" (1-PLY, 2-PLY, 3-PLY, 4-PLY & 5-PLY NCR, FULL PAGE & 2-UP)",
+              "CAMPAP 200P DESPATCH BOOK, 128P VISITOR BOOK, F5 CHECK ROLL BOOKS (120P / 200P) & VEHICLE LOG BOOKS",
+              "STOCK CARDS, BIN CARDS, JOB CARDS (1–15 / 16–31 / 1–31) & LADANG INTAN PEST/DISEASE SURVEILLANCE SHEETS",
+              "HEAVY-DUTY WOODEN & PVC CLIPBOARDS (A4 / A5), HARD CARD CASES (A3 / A4) & 3\" LEVER ARCH MANIFEST FILES"
+            ]
+          },
+          {
+            name: "Carton Sealing Tapes, Stretch Film, Caution Tapes & Poly Sealers",
+            caption: "Brown/Clear OPP Tapes, Fragile/Caution Tapes, Impulse Sealers & Twine",
+            visualKey: "packaging_tapes",
+            items: [
+              "BROWN & TRANSPARENT OPP PACKING TAPE (48MM X 40M / 48MM X 90M / 48MM X 200YDS & 72MM X 40M)",
+              "FRAGILE TAPE (45MM X 50YDS), FRAGILE STICKERS (500'S/PACK), AWAS/CAUTION TAPE (50MM & 70MM X 50M)",
+              "HEAVY-DUTY CLOTH TAPE (24MM / 36MM / 48MM / 60MM / 72MM), MASKING TAPE, DOUBLE-SIDED FOAM & PVC WIRE TAPE",
+              "ASTAR & KIDARIO 2\" METAL/PLASTIC OPP TAPE DISPENSERS/CUTTERS, COTTON TWINE, RUBBER BANDS & CABLE TIES",
+              "PE STRETCH FILM BLACK (2.4KG), DOLPHIN PADDED BAGS, OPP BAGS & IMPULSE POLY BAG SEALERS (PFS-300T A4 / PFS-400T A3)"
+            ]
+          },
+          {
+            name: "Shipping Labels, Barcode Printers, Scanners & Industrial Markers",
+            caption: "Zebra/Brother Label Printers, 2D Barcode Scanners, Thermal Labels & Paint Markers",
+            visualKey: "barcode_scanner",
+            items: [
+              "THERMAL LABEL STICKER 100MMX150MM (250'S/ROLL), BARCODE STICKERS, SELF-ADHESIVE LABELS & THERMAL TRANSFER WAX RIBBONS",
+              "ZEBRA BARCODE & MOBILE PRINTERS (ZD220T / ZD230 / ZQ520 / ZQ521), TSC MH241T & BROTHER QL-800 / P-TOUCH LABEL PRINTERS",
+              "ZEBRA DS-2208 (1D/2D) & DATALOGIC MAGELLAN 900i BARCODE SCANNERS + DYMO / BROTHER TZE LAMINATED TAPES",
+              "ARTLINE 70, FASTER 70/90 & YOSOGO 70/90 PERMANENT MARKERS (BLACK / BLUE / RED) FOR CARTON MARKING",
+              "ZEBRA & ASTAR INDUSTRIAL OIL-BASED PAINT MARKERS (WHITE, YELLOW, GOLD, SILVER, BLACK, RED, BLUE) & SDI HEAVY CUTTERS"
+            ]
+          },
+          {
+            name: "Dot-Matrix Impact Printers, Ribbons & Dispatch Workstations",
+            caption: "Epson LQ-310/LQ-2190 Dot-Matrix Printers, Ribbons, Rugged Phones & PCs",
+            visualKey: "printers_toners",
+            items: [
+              "EPSON LQ-310, LQ-590II, LQ-2090II & LQ-2190 DOT-MATRIX IMPACT PRINTERS FOR MULTI-PART DO/INVOICE FORMS",
+              "GENUINE & COMPATIBLE RIBBONS: EPSON S015639 (LQ-310), S015589 (LQ-590), S015531 (LQ-2190), ERC-38 & PRINTRONIX RIBBONS",
+              "EPSON TM-T81III / TM-U220B & VOIS TP32 POS RECEIPT PRINTERS + THERMAL RECEIPT ROLLS (80MMX60MM & 57MMX60MM)",
+              "OUKITEL RUGGED WATERPROOF SMARTPHONES (WP18 / WP20 / WP28E) & SAMSUNG GALAXY TAB ACTIVE 5 PRO FOR FIELD DISPATCH",
+              "ACER, DELL, HP & LENOVO DESKTOPS, LAPTOPS, MONITORS, KINGSTON/APACER RAM, SSDS & PROLINK/KOSS UPS BACKUP"
+            ]
+          },
+          {
+            name: "Warehouse CCTV Surveillance, NVRs, Networking & Facility Hardware",
+            caption: "Dahua/Hikvision NVRs & Cameras, Surveillance HDDs, Racks & Safety Signage",
+            visualKey: "cctv_storage",
+            items: [
+              "DAHUA (4CH / 8CH / 16CH 4K NVR & XVR) & HIKVISION DIGITAL VIDEO RECORDERS + BULLET, TURRET & PTZ IP CAMERAS",
+              "TOSHIBA S300 (2TB), SEAGATE SKYHAWK (1TB–10TB) & WD PURPLE (1TB–6TB) 3.5\" 24/7 SURVEILLANCE HARD DRIVES",
+              "TP-LINK OMADA, D-LINK & REYEE GIGABIT / POE+ SWITCHES, OUTDOOR CPE, 4G/5G ROUTERS, STARLINK KIT & CAT6 305M CABLES",
+              "MULTIPURPOSE WAREHOUSE TROLLEY (150KG), BOLTLESS STORAGE RACKS, SERVER RACKS (6U–42U) & TIME RECORDERS / FINGERPRINT",
+              "DL HANDHELD TALLY COUNTERS, OUTDOOR FLASHLIGHTS / WORK LIGHTS, METAL KEY CABINETS & NO PARKING / DILARANG MEROKOK SIGNS"
+            ]
+          }
+        ]
+      },
+      {
+        id: "clinics",
+        index: 6,
+        title: "Clinics & Healthcare Providers",
+        subtitle: "Patient record filing, reception stationery, label & receipt printers, consultation IT and clinic CCTV security",
+        target: "Private medical clinics, specialist centres, dental practices, pharmacies, laboratories and hospital administration in Sabah",
+        summary: "Support smooth patient registration, organised medical chart filing, prescription/specimen labelling, and reliable clinic IT. Note: DUNCO supplies administrative, stationery, IT, and security products only; no unverified pharmaceutical or clinical medical devices are claimed.",
+        categories: [
+          {
+            name: "Patient Chart Binders, Medical Record Filing & Index Systems",
+            caption: "White PVC Ring Binders, Arch Files, Dividers & Patient Folders",
+            visualKey: "ringfile_covers",
+            items: [
+              "ABBA, K2 & THUNDER WHITE PVC 2D RING FILES A4 (25MM / 40MM / 50MM) & EMI-FILE Q-RING FILES (65MM / 80MM)",
+              "BINDEE & KIDARIO 3\" LEVER ARCH FILES, ABBA FLAT FILES, SPRING FILES, POCKET FILES & L-SHAPE FOLDERS",
+              "CAMPAP & KIDARIO A4 INDEX DIVIDERS (A–Z ALPHABETICAL, 1–31 DAILY, JAN–DEC MONTHLY & 5–20 COLOUR TABS)",
+              "KIDARIO & ASTAR CLEAR BOOKS (10–100 POCKETS), 11-HOLE SHEET PROTECTORS & EXPANDING 13-POCKET FILES",
+              "4-DRAWER STEEL FILING CABINETS, SLIDING/SWING DOOR CUPBOARDS, STAFF LOCKERS & 3-TIER DOCUMENT TRAYS"
+            ]
+          },
+          {
+            name: "Reception Counter, Dispensary Labelling & Billing Stationery",
+            caption: "Label Printers, Prescription Stickers, Receipt Books, Stamps & Signage",
+            visualKey: "labeller_ribbon",
+            items: [
+              "BROTHER (QL-800 / PT-H110 / PT-D210 / PT-D460BT) & DYMO LMR160 LABEL PRINTERS + TZE LAMINATED & DK LABELS",
+              "SELF-ADHESIVE MULTIPURPOSE LABELS (ALL SIZES) FOR MEDICATION PACKETS, SPECIMEN TUBES & PATIENT FOLDERS",
+              "OFFICIAL RECEIPT NCR BOOKS, PAYMENT VOUCHERS, APPOINTMENTS / VISITOR BOOKS & MEDICAL CERTIFICATE (MC) PRINTED FORMS",
+              "DL SUMMON BELL (RECEPTION CALL BELL), ASTAR & KEJEA ACRYLIC COUNTER SIGN HOLDERS (A4 / A5) & DILARANG MEROKOK SIGNS",
+              "XSTAMPER QUIX STAMPS, ASTAR RECEIVED/PAID DATE STAMPS, FINGERPRINT PADS, CASIO/CANON CALCULATORS & CASH BOXES",
+              "KAMARA 4-PLY FACIAL TISSUE, CUTIE TISSUE ROLLS, GARBAGE BAGS, ISOPROPYL ALCOHOL SPRAY & NON-ALCOHOL SURFACE SANITIZER"
+            ]
+          },
+          {
+            name: "Administrative Copy Paper, Envelopes & Consultation Desk Supplies",
+            caption: "A4 Copy Paper, X-Ray/Report Envelopes, Pens & Desk Organisers",
+            visualKey: "pens_markers",
+            items: [
+              "DOUBLE A, PAPERONE, A ONE & SMART COPY A4 70GSM & 80GSM PPC PAPER (500'S) FOR PATIENT REPORTS & LETTERS",
+              "CAMPAP & DOLPHIN WHITE & BROWN ENVELOPES (4\"X9\" WINDOW/PLAIN & LARGE 10\"X12\", 10\"X15\", 12\"X16\" FOR SCANS/REPORTS)",
+              "PILOT G2, PENTEL ENERGEL, FABER-CASTELL & UNI-BALL PENS, HIGHLIGHTERS, CORRECTION TAPES & STICKY NOTES (SIGN HERE)",
+              "CLIPBOARDS (A4 / A5) FOR PATIENT REGISTRATION FORMS, STAFF ID CARD HOLDERS, LANYARDS & NAME TAGS",
+              "MAX STAPLERS & STAPLES, 2-HOLE PUNCHERS, BINDER CLIPS, PAPER SHREDDERS (FOR CONFIDENTIAL PATIENT DATA) & LAMINATORS"
+            ]
+          },
+          {
+            name: "Consultation Room PCs, All-in-Ones, Eye-Care Monitors & Printers",
+            caption: "All-in-One Desktops, Laptops, Eye-Care Monitors, Printers & Tablets",
+            visualKey: "projector_monitor",
+            items: [
+              "HP, DELL, LENOVO & ACER ALL-IN-ONE (AIO) DESKTOPS & COMPACT SMALL-FORM-FACTOR (SFF) WORKSTATION PCS",
+              "HP PROBOOK / ELITEBOOK, DELL PRO / LATITUDE, LENOVO THINKPAD, APPLE IPAD & SAMSUNG GALAXY TAB FOR DOCTORS",
+              "ASUS EYE-CARE, DELL, HP & ACER 21.5\" / 23.8\" / 27\" FHD IPS MONITORS + DOUBLE MONITOR ARMS",
+              "CANON, BROTHER, EPSON & HP LASER / INKTANK MULTIFUNCTION PRINTERS, RECEIPT PRINTERS & DUPLEX DOCUMENT SCANNERS",
+              "SILENT WIRELESS MICE (LOGITECH M221 / M240 / M331 & 256 SILENT), KEYBOARDS, WEBCAMS & JABRA SPEAKERPHONES"
+            ]
+          },
+          {
+            name: "Clinic Premises CCTV Security, Access Control & Power Backup",
+            caption: "Dahua/Hikvision CCTV, Fingerprint Door Access, UPS & Antivirus Software",
+            visualKey: "cctv_storage",
+            items: [
+              "DAHUA & HIKVISION 4CH / 8CH / 16CH NVR & XVR RECORDERS + INDOOR/OUTDOOR DOME, TURRET & WI-FI CAMERAS",
+              "TOSHIBA S300, SEAGATE SKYHAWK & WD PURPLE 2TB–10TB SURVEILLANCE HARD DRIVES FOR CONTINUOUS RECORDING",
+              "HIKVISION DS-K1T804AEF & VIDONE ITIME F3 FINGERPRINT ACCESS CONTROL / ATTENDANCE TERMINALS & MIFARE CARDS",
+              "KOSS & PROLINK UPS (800VA TO 3000VA) & APC SURGE PROTECTORS TO PROTECT CLINIC SERVERS & DISPENSARY PCS",
+              "SYNOLOGY NAS BACKUP STORAGE, TP-LINK WIFI 6 MESH / ACCESS POINTS, MICROSOFT OFFICE 2024 & KASPERSKY / ESET SECURITY"
+            ]
+          }
+        ]
+      }
+    ];
+
+    const TECHNICAL_SVGS = {
+      ringfile_covers: `
+        <svg viewBox="0 0 160 80" class="w-full h-full drop-shadow-xs" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="6" y="8" width="45" height="62" rx="2" fill="#F8FAFC" stroke="#64748B" stroke-width="1.4"/>
+          <rect x="51" y="8" width="45" height="62" rx="2" fill="#FFFFFF" stroke="#64748B" stroke-width="1.4"/>
+          <line x1="51" y1="8" x2="51" y2="70" stroke="#94A3B8" stroke-width="2.5"/>
+          <path d="M51 22 C56 22, 60 25, 57 30 C54 34, 51 34, 51 34" stroke="#2563EB" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="51" cy="22" r="1.8" fill="#2563EB"/>
+          <path d="M51 46 C56 46, 60 49, 57 54 C54 58, 51 58, 51 58" stroke="#2563EB" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="51" cy="46" r="1.8" fill="#2563EB"/>
+          <line x1="61" y1="18" x2="86" y2="18" stroke="#E2E8F0" stroke-width="1.5"/>
+          <line x1="61" y1="24" x2="86" y2="24" stroke="#E2E8F0" stroke-width="1.5"/>
+          <rect x="106" y="14" width="44" height="56" rx="2" fill="#0284C7" fill-opacity="0.12" stroke="#0284C7" stroke-width="1.2"/>
+          <rect x="103" y="18" width="44" height="56" rx="2" fill="#0284C7" fill-opacity="0.2" stroke="#0284C7" stroke-width="1.2"/>
+          <path d="M106 20 L144 58" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+          <rect x="108" y="47" width="34" height="13" rx="1.5" fill="#0284C7"/>
+          <text x="111" y="56" font-size="6.5" font-weight="bold" fill="white">A4 2D RING</text>
+        </svg>
+      `,
+      paper_notebooks: `
+        <svg viewBox="0 0 160 80" class="w-full h-full drop-shadow-xs" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g transform="translate(8, 12)">
+            <rect x="4" y="12" width="54" height="44" rx="2" fill="#EFF6FF" stroke="#2563EB" stroke-width="1.4"/>
+            <rect x="4" y="12" width="54" height="12" fill="#1D4ED8"/>
+            <text x="9" y="20" font-size="6" font-weight="bold" fill="#FFFFFF">A4 80GSM</text>
+            <line x1="8" y1="32" x2="52" y2="32" stroke="#93C5FD" stroke-width="1.5"/>
+            <line x1="8" y1="38" x2="52" y2="38" stroke="#93C5FD" stroke-width="1.5"/>
+            <text x="9" y="50" font-size="5.5" font-weight="bold" fill="#1E40AF">500 SHEETS</text>
+          </g>
+          <g transform="translate(74, 10)">
+            <rect x="6" y="4" width="42" height="56" rx="2" fill="#FEF3C7" stroke="#D97706" stroke-width="1.3"/>
+            <line x1="14" y1="4" x2="14" y2="60" stroke="#B45309" stroke-width="1.5"/>
+            <rect x="18" y="14" width="24" height="12" rx="1" fill="#FFFFFF" stroke="#F59E0B" stroke-width="1"/>
+            <text x="20" y="22" font-size="5" font-weight="bold" fill="#92400E">EX. BOOK</text>
+            <rect x="52" y="28" width="24" height="24" rx="1" fill="#FEF08A" stroke="#CA8A04" stroke-width="1.2"/>
+            <text x="55" y="42" font-size="5" font-weight="bold" fill="#854D0E">3x3 PAD</text>
+          </g>
+        </svg>
+      `,
+      pens_markers: `
+        <svg viewBox="0 0 160 80" class="w-full h-full drop-shadow-xs" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g transform="translate(8, 10)">
+            <rect x="16" y="4" width="88" height="11" rx="2" fill="#1E293B" stroke="#0F172A" stroke-width="1.2"/>
+            <rect x="104" y="3" width="34" height="13" rx="2" fill="#2563EB"/>
+            <polygon points="16,5 4,9.5 16,14" fill="#64748B"/>
+            <text x="28" y="11.5" font-size="6" font-weight="bold" fill="#FFFFFF">PILOT G2 / ENERGEL</text>
+          </g>
+          <g transform="translate(8, 30)">
+            <rect x="16" y="4" width="76" height="14" rx="3" fill="#FACC15" stroke="#CA8A04" stroke-width="1.2"/>
+            <rect x="92" y="3" width="28" height="16" rx="2" fill="#0F172A"/>
+            <polygon points="16,6 6,11 16,16" fill="#EAB308"/>
+            <text x="24" y="13" font-size="6" font-weight="900" fill="#0F172A">STABILO / TEXTLINER</text>
+          </g>
+          <g transform="translate(8, 52)">
+            <rect x="16" y="4" width="95" height="9" rx="1" fill="#16A34A" stroke="#15803D" stroke-width="1"/>
+            <polygon points="16,4 5,8.5 16,13" fill="#FDE047"/>
+            <polygon points="8,7 5,8.5 8,10" fill="#0F172A"/>
+            <text x="26" y="10.5" font-size="5.5" font-weight="bold" fill="#FFFFFF">FABER-CASTELL 2B</text>
+          </g>
+        </svg>
+      `,
+      craft_paper: `
+        <svg viewBox="0 0 160 80" class="w-full h-full drop-shadow-xs" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="18,16 66,8 58,68 10,60" fill="#EF4444" stroke="#DC2626" stroke-width="1"/>
+          <polygon points="30,13 78,11 68,71 20,65" fill="#F59E0B" stroke="#D97706" stroke-width="1"/>
+          <polygon points="42,14 90,18 78,74 30,69" fill="#10B981" stroke="#059669" stroke-width="1"/>
+          <polygon points="54,18 100,26 86,77 40,71" fill="#3B82F6" stroke="#2563EB" stroke-width="1"/>
+          <g transform="translate(94, 18)">
+            <rect x="4" y="2" width="54" height="46" rx="2.5" fill="#FFFFFF" stroke="#2563EB" stroke-width="1.5"/>
+            <rect x="4" y="2" width="54" height="13" fill="#1D4ED8"/>
+            <text x="8" y="11" font-size="6" font-weight="800" fill="#FFFFFF">CAMPAP / SAKIRA</text>
+            <rect x="8" y="20" width="46" height="18" rx="1.5" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="1"/>
+            <text x="11" y="29" font-size="6" font-weight="bold" fill="#1E40AF">120G-210G</text>
+            <text x="11" y="35" font-size="5" fill="#3B82F6">COLOUR & CARD</text>
+          </g>
+        </svg>
+      `,
+      lever_arch: `
+        <svg viewBox="0 0 160 80" class="w-full h-full drop-shadow-xs" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="14,10 38,16 38,70 14,64" fill="#1E293B" stroke="#0F172A" stroke-width="1.3"/>
+          <polygon points="38,16 94,10 94,62 38,70" fill="#F8FAFC" stroke="#0F172A" stroke-width="1.3"/>
+          <rect x="18" y="20" width="16" height="24" rx="1" fill="#FFFFFF" stroke="#94A3B8" stroke-width="1"/>
+          <line x1="21" y1="26" x2="31" y2="26" stroke="#EF4444" stroke-width="1.5"/>
+          <circle cx="26" cy="52" r="4" fill="#475569" stroke="#94A3B8" stroke-width="1.2"/>
+          <g transform="translate(98, 14)">
+            <polygon points="6,6 48,6 44,56 2,56" fill="#FDE047" stroke="#CA8A04" stroke-width="1.3"/>
+            <polygon points="6,6 24,6 20,14 2,14" fill="#EAB308"/>
+            <text x="8" y="32" font-size="6" font-weight="bold" fill="#713F12">ARCH & CLEAR</text>
+            <text x="8" y="41" font-size="5" font-weight="600" fill="#854D0E">FILES / FOLDERS</text>
+          </g>
+        </svg>
+      `,
+      labeller_ribbon: `
+        <svg viewBox="0 0 160 80" class="w-full h-full drop-shadow-xs" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g transform="translate(10, 10)">
+            <path d="M 12 36 L 38 12 L 64 12 C 72 12, 78 18, 76 26 L 68 34 L 64 54 L 48 54 L 52 38 L 36 38 L 22 52 Z" fill="#DC2626" stroke="#991B1B" stroke-width="1.3"/>
+            <rect x="36" y="40" width="8" height="12" rx="2" fill="#1E293B"/>
+            <circle cx="56" cy="22" r="6" fill="#FFFFFF" stroke="#991B1B" stroke-width="1"/>
+            <text x="53" y="24" font-size="6" font-weight="bold" fill="#DC2626">8</text>
+            <text x="22" y="32" font-size="5.5" font-weight="bold" fill="#FFFFFF">LABELLER</text>
+          </g>
+          <g transform="translate(94, 16)">
+            <ellipse cx="26" cy="14" rx="20" ry="8" fill="#F1F5F9" stroke="#64748B" stroke-width="1.2"/>
+            <rect x="6" y="14" width="40" height="26" fill="#FFFFFF" stroke="#64748B" stroke-width="1.2"/>
+            <ellipse cx="26" cy="40" rx="20" ry="8" fill="#E2E8F0" stroke="#64748B" stroke-width="1.2"/>
+            <circle cx="26" cy="14" r="6" fill="#64748B"/>
+            <rect x="22" y="22" width="26" height="14" rx="1" fill="#FEF08A" stroke="#CA8A04" stroke-width="1"/>
+            <text x="24" y="31" font-size="4.8" font-weight="bold" fill="#854D0E">STICKERS</text>
+          </g>
+        </svg>
+      `,
+      casio_calc: `
+        <svg viewBox="0 0 160 80" class="w-full h-full drop-shadow-xs" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g transform="translate(12, 8)">
+            <rect x="8" y="12" width="72" height="52" rx="4" fill="#FFFFFF" stroke="#64748B" stroke-width="1.4"/>
+            <rect x="20" y="2" width="46" height="10" rx="2" fill="#E2E8F0" stroke="#475569" stroke-width="1"/>
+            <rect x="15" y="18" width="58" height="12" rx="1.5" fill="#E0F2FE" stroke="#0284C7" stroke-width="1"/>
+            <text x="19" y="27" font-size="7" font-family="monospace" font-weight="bold" fill="#0369A1">123,456.78</text>
+            <rect x="16" y="34" width="10" height="7" rx="1" fill="#F1F5F9" stroke="#94A3B8"/>
+            <rect x="30" y="34" width="10" height="7" rx="1" fill="#F1F5F9" stroke="#94A3B8"/>
+            <rect x="44" y="34" width="10" height="7" rx="1" fill="#F1F5F9" stroke="#94A3B8"/>
+            <rect x="58" y="34" width="14" height="7" rx="1" fill="#EF4444"/>
+            <rect x="16" y="44" width="10" height="7" rx="1" fill="#F1F5F9" stroke="#94A3B8"/>
+            <rect x="30" y="44" width="10" height="7" rx="1" fill="#F1F5F9" stroke="#94A3B8"/>
+            <rect x="44" y="44" width="10" height="7" rx="1" fill="#F1F5F9" stroke="#94A3B8"/>
+            <rect x="58" y="44" width="14" height="15" rx="1" fill="#2563EB"/>
+          </g>
+          <g transform="translate(100, 12)">
+            <rect x="2" y="2" width="46" height="54" rx="2" fill="#FEF3C7" stroke="#D97706" stroke-width="1.3"/>
+            <rect x="2" y="2" width="10" height="54" fill="#B45309"/>
+            <text x="15" y="24" font-size="5.5" font-weight="bold" fill="#92400E">LEDGER &</text>
+            <text x="15" y="33" font-size="5.5" font-weight="bold" fill="#92400E">VOUCHERS</text>
+          </g>
+        </svg>
+      `,
+      printers_toners: `
+        <svg viewBox="0 0 160 80" class="w-full h-full drop-shadow-xs" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g transform="translate(8, 12)">
+            <rect x="14" y="2" width="48" height="14" rx="1.5" fill="#F8FAFC" stroke="#475569" stroke-width="1.2"/>
+            <rect x="4" y="14" width="68" height="30" rx="3" fill="#1E293B" stroke="#0F172A" stroke-width="1.3"/>
+            <rect x="14" y="36" width="48" height="18" rx="1.5" fill="#FFFFFF" stroke="#64748B" stroke-width="1.2"/>
+            <circle cx="60" cy="22" r="2.5" fill="#22C55E"/>
+            <text x="12" y="27" font-size="5.5" font-weight="bold" fill="#38BDF8">CANON / EPSON</text>
+            <text x="18" y="47" font-size="5" font-weight="bold" fill="#334155">HP / BROTHER</text>
+          </g>
+          <g transform="translate(92, 14)">
+            <rect x="4" y="16" width="54" height="16" rx="2" fill="#0F172A" stroke="#334155" stroke-width="1.2"/>
+            <text x="9" y="26" font-size="5.5" font-weight="bold" fill="#FACC15">TONER & INK</text>
+            <rect x="8" y="36" width="10" height="18" rx="1.5" fill="#0284C7"/>
+            <rect x="21" y="36" width="10" height="18" rx="1.5" fill="#E11D48"/>
+            <rect x="34" y="36" width="10" height="18" rx="1.5" fill="#EAB308"/>
+            <rect x="47" y="36" width="10" height="18" rx="1.5" fill="#1E293B"/>
+          </g>
+        </svg>
+      `,
+      pc_ups: `
+        <svg viewBox="0 0 160 80" class="w-full h-full drop-shadow-xs" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g transform="translate(8, 10)">
+            <rect x="4" y="4" width="66" height="40" rx="2" fill="#0F172A" stroke="#334155" stroke-width="1.3"/>
+            <rect x="7" y="7" width="60" height="34" fill="#1E293B"/>
+            <text x="13" y="26" font-size="6" font-weight="bold" fill="#38BDF8">PC & LAPTOP</text>
+            <rect x="32" y="44" width="10" height="10" fill="#64748B"/>
+            <rect x="20" y="54" width="34" height="3" rx="1" fill="#334155"/>
+          </g>
+          <g transform="translate(88, 10)">
+            <rect x="6" y="4" width="28" height="54" rx="2" fill="#1E293B" stroke="#0F172A" stroke-width="1.3"/>
+            <rect x="11" y="10" width="18" height="8" rx="1" fill="#0284C7"/>
+            <circle cx="20" cy="26" r="2.5" fill="#22C55E"/>
+            <text x="11" y="44" font-size="5.5" font-weight="bold" fill="#FFFFFF">UPS</text>
+            <rect x="38" y="18" width="24" height="38" rx="2" fill="#2563EB" stroke="#1D4ED8" stroke-width="1.2"/>
+            <text x="41" y="38" font-size="5" font-weight="bold" fill="#FFFFFF">MS365</text>
+          </g>
+        </svg>
+      `,
+      photo_media: `
+        <svg viewBox="0 0 160 80" class="w-full h-full drop-shadow-xs" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g transform="translate(12, 10)">
+            <rect x="4" y="4" width="50" height="58" rx="2" fill="#FFFFFF" stroke="#0284C7" stroke-width="1.4"/>
+            <polygon points="8,48 22,30 34,42 42,34 50,48" fill="#38BDF8" opacity="0.7"/>
+            <circle cx="20" cy="20" r="5" fill="#FACC15"/>
+            <text x="9" y="57" font-size="5.5" font-weight="bold" fill="#0369A1">PHOTO PAPER</text>
+          </g>
+          <g transform="translate(80, 14)">
+            <rect x="4" y="6" width="60" height="48" rx="2" fill="#FEF9C3" stroke="#CA8A04" stroke-width="1.3"/>
+            <path d="M44 6 L64 26 L44 26 Z" fill="#FDE047" stroke="#CA8A04" stroke-width="1"/>
+            <text x="9" y="34" font-size="5.5" font-weight="bold" fill="#854D0E">GLOSSY / MATTE</text>
+            <text x="9" y="44" font-size="5" font-weight="bold" fill="#A16207">STICKER MEDIA</text>
+          </g>
+        </svg>
+      `,
+      binding_finishing: `
+        <svg viewBox="0 0 160 80" class="w-full h-full drop-shadow-xs" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g transform="translate(10, 12)">
+            <rect x="4" y="20" width="66" height="28" rx="3" fill="#334155" stroke="#0F172A" stroke-width="1.3"/>
+            <rect x="12" y="6" width="50" height="16" rx="1" fill="#BAE6FD" stroke="#0284C7" stroke-width="1.2"/>
+            <line x1="70" y1="24" x2="78" y2="8" stroke="#DC2626" stroke-width="2.5" stroke-linecap="round"/>
+            <text x="10" y="36" font-size="5.5" font-weight="bold" fill="#FFFFFF">LAMINATOR &</text>
+            <text x="10" y="44" font-size="5.5" font-weight="bold" fill="#38BDF8">BINDING</text>
+          </g>
+          <g transform="translate(96, 12)">
+            <rect x="4" y="6" width="48" height="50" rx="2" fill="#F8FAFC" stroke="#475569" stroke-width="1.3"/>
+            <line x1="4" y1="14" x2="12" y2="14" stroke="#0F172A" stroke-width="2"/>
+            <line x1="4" y1="22" x2="12" y2="22" stroke="#0F172A" stroke-width="2"/>
+            <line x1="4" y1="30" x2="12" y2="30" stroke="#0F172A" stroke-width="2"/>
+            <line x1="4" y1="38" x2="12" y2="38" stroke="#0F172A" stroke-width="2"/>
+            <text x="15" y="28" font-size="5.5" font-weight="bold" fill="#1E293B">COMBS &</text>
+            <text x="15" y="36" font-size="5.5" font-weight="bold" fill="#0284C7">COVERS</text>
+          </g>
+        </svg>
+      `,
+      teaching_whiteboard: `
+        <svg viewBox="0 0 160 80" class="w-full h-full drop-shadow-xs" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g transform="translate(10, 8)">
+            <rect x="4" y="4" width="84" height="50" rx="2" fill="#FFFFFF" stroke="#475569" stroke-width="2"/>
+            <line x1="16" y1="54" x2="12" y2="66" stroke="#64748B" stroke-width="2"/>
+            <line x1="76" y1="54" x2="80" y2="66" stroke="#64748B" stroke-width="2"/>
+            <text x="12" y="22" font-size="6.5" font-weight="bold" fill="#1D4ED8">WHITEBOARD</text>
+            <line x1="12" y1="30" x2="68" y2="30" stroke="#EF4444" stroke-width="1.5"/>
+            <rect x="56" y="44" width="22" height="6" rx="1" fill="#1E293B"/>
+          </g>
+          <g transform="translate(102, 12)">
+            <rect x="4" y="6" width="44" height="52" rx="2" fill="#991B1B" stroke="#7F1D1D" stroke-width="1.3"/>
+            <rect x="10" y="14" width="32" height="22" rx="1" fill="#FEF08A"/>
+            <text x="13" y="27" font-size="5.5" font-weight="bold" fill="#7F1D1D">SIJIL /</text>
+            <text x="13" y="34" font-size="5" font-weight="bold" fill="#991B1B">FOLDER</text>
+          </g>
+        </svg>
+      `,
+      sports_pe: `
+        <svg viewBox="0 0 160 80" class="w-full h-full drop-shadow-xs" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="38" cy="40" r="22" fill="#F97316" stroke="#9A3412" stroke-width="1.5"/>
+          <path d="M16 40 Q38 28 60 40 M38 18 Q28 40 38 62" stroke="#7C2D12" stroke-width="1.3" fill="none"/>
+          <text x="23" y="43" font-size="6" font-weight="900" fill="#FFFFFF">MOLTEN</text>
+          <g transform="translate(72, 14)">
+            <polygon points="18,44 6,16 30,16" fill="#F8FAFC" stroke="#475569" stroke-width="1.2"/>
+            <ellipse cx="18" cy="46" rx="6" ry="4" fill="#2563EB"/>
+            <text x="8" y="12" font-size="5.5" font-weight="bold" fill="#1E293B">RSL / YONEX</text>
+          </g>
+          <g transform="translate(114, 22)">
+            <polygon points="18,4 6,42 30,42" fill="#EF4444" stroke="#B91C1C" stroke-width="1.2"/>
+            <rect x="2" y="42" width="32" height="5" rx="1" fill="#991B1B"/>
+          </g>
+        </svg>
+      `,
+      packaging_tapes: `
+        <svg viewBox="0 0 160 80" class="w-full h-full drop-shadow-xs" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g transform="translate(10, 12)">
+            <circle cx="30" cy="28" r="22" fill="#D97706" stroke="#92400E" stroke-width="1.5"/>
+            <circle cx="30" cy="28" r="11" fill="#FFFFFF" stroke="#92400E" stroke-width="1.2"/>
+            <text x="14" y="56" font-size="5.5" font-weight="bold" fill="#78350F">OPP TAPE 48MM</text>
+          </g>
+          <g transform="translate(76, 14)">
+            <rect x="4" y="6" width="68" height="20" rx="2" fill="#EF4444" stroke="#991B1B" stroke-width="1.2"/>
+            <text x="12" y="19" font-size="7" font-weight="900" fill="#FFFFFF">FRAGILE</text>
+            <rect x="4" y="32" width="68" height="18" rx="2" fill="#FACC15" stroke="#CA8A04" stroke-width="1.2"/>
+            <text x="10" y="44" font-size="6" font-weight="900" fill="#0F172A">AWAS / CAUTION</text>
+          </g>
+        </svg>
+      `,
+      barcode_scanner: `
+        <svg viewBox="0 0 160 80" class="w-full h-full drop-shadow-xs" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g transform="translate(10, 10)">
+            <path d="M12 16 L46 12 L50 28 L32 32 L38 56 L24 56 L20 32 L12 28 Z" fill="#1E293B" stroke="#0F172A" stroke-width="1.3"/>
+            <line x1="48" y1="20" x2="72" y2="14" stroke="#EF4444" stroke-width="1.5" stroke-dasharray="2 1"/>
+            <line x1="48" y1="20" x2="72" y2="26" stroke="#EF4444" stroke-width="1.5" stroke-dasharray="2 1"/>
+            <text x="12" y="64" font-size="5.5" font-weight="bold" fill="#334155">ZEBRA SCANNER</text>
+          </g>
+          <g transform="translate(86, 12)">
+            <rect x="4" y="6" width="58" height="46" rx="2" fill="#FFFFFF" stroke="#475569" stroke-width="1.3"/>
+            <line x1="12" y1="14" x2="12" y2="34" stroke="#0F172A" stroke-width="2"/>
+            <line x1="17" y1="14" x2="17" y2="34" stroke="#0F172A" stroke-width="1"/>
+            <line x1="22" y1="14" x2="22" y2="34" stroke="#0F172A" stroke-width="3"/>
+            <line x1="29" y1="14" x2="29" y2="34" stroke="#0F172A" stroke-width="1.5"/>
+            <line x1="35" y1="14" x2="35" y2="34" stroke="#0F172A" stroke-width="2.5"/>
+            <line x1="42" y1="14" x2="42" y2="34" stroke="#0F172A" stroke-width="1"/>
+            <line x1="48" y1="14" x2="48" y2="34" stroke="#0F172A" stroke-width="2"/>
+            <text x="10" y="45" font-size="5.5" font-weight="bold" fill="#0284C7">100x150 LABEL</text>
+          </g>
+        </svg>
+      `,
+      projector_monitor: `
+        <svg viewBox="0 0 160 80" class="w-full h-full drop-shadow-xs" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g transform="translate(10, 8)">
+            <rect x="4" y="4" width="70" height="42" rx="2" fill="#0F172A" stroke="#334155" stroke-width="1.3"/>
+            <rect x="6" y="6" width="66" height="38" fill="#1E293B"/>
+            <text x="11" y="26" font-size="5.5" font-weight="bold" fill="#38BDF8">IPS MONITOR /</text>
+            <text x="11" y="34" font-size="5" font-weight="bold" fill="#BAE6FD">AIO WORKSTATION</text>
+            <rect x="36" y="46" width="6" height="12" fill="#64748B"/>
+            <ellipse cx="39" cy="59" rx="18" ry="4" fill="#334155" stroke="#475569" stroke-width="1"/>
+          </g>
+          <g transform="translate(86, 20)">
+            <rect x="4" y="8" width="62" height="26" rx="3" fill="#FFFFFF" stroke="#475569" stroke-width="1.3"/>
+            <circle cx="20" cy="21" r="9" fill="#1E293B" stroke="#0F172A" stroke-width="1.1"/>
+            <circle cx="20" cy="21" r="6" fill="#38BDF8" fill-opacity="0.4" stroke="#0284C7" stroke-width="1.1"/>
+            <circle cx="18" cy="19" r="2" fill="#FFFFFF" opacity="0.8"/>
+            <text x="33" y="23" font-size="5" font-weight="bold" fill="#334155">EPSON /</text>
+            <text x="33" y="30" font-size="5" font-weight="bold" fill="#0284C7">ACER PROJ</text>
+          </g>
+        </svg>
+      `,
+      ncr_books: `
+        <svg viewBox="0 0 160 80" class="w-full h-full drop-shadow-xs" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g transform="translate(14, 10)">
+            <polygon points="12,18 72,12 88,48 26,56" fill="#FEF08A" stroke="#CA8A04" stroke-width="1.1"/>
+            <polygon points="18,14 78,8 94,44 32,52" fill="#BBF7D0" stroke="#16A34A" stroke-width="1.1"/>
+            <polygon points="24,10 84,4 100,40 38,48" fill="#FFFFFF" stroke="#2563EB" stroke-width="1.3"/>
+            <polygon points="24,10 32,9 46,47 38,48" fill="#1E3A8A"/>
+            <text x="40" y="23" font-size="6" font-weight="bold" fill="#1E40AF">NCR DO / PO /</text>
+            <text x="41" y="31" font-size="5" font-weight="600" fill="#475569">INVOICE &</text>
+            <text x="42" y="38" font-size="4.8" font-weight="bold" fill="#DC2626">COMP. FORMS</text>
+          </g>
+        </svg>
+      `,
+      cctv_storage: `
+        <svg viewBox="0 0 160 80" class="w-full h-full drop-shadow-xs" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g transform="translate(8, 8)">
+            <rect x="4" y="10" width="76" height="18" rx="2" fill="#0F172A" stroke="#334155" stroke-width="1.3"/>
+            <circle cx="12" cy="19" r="2.5" fill="#38BDF8"/>
+            <circle cx="19" cy="19" r="1.5" fill="#22C55E"/>
+            <rect x="58" y="16" width="16" height="5" fill="#1E293B"/>
+            <text x="24" y="21" font-size="5" font-weight="bold" fill="#E2E8F0">DAHUA / HIK NVR</text>
+            <rect x="8" y="34" width="68" height="16" rx="2" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+            <text x="14" y="44" font-size="5" font-weight="bold" fill="#38BDF8">POE SWITCH & UPS</text>
+          </g>
+          <g transform="translate(88, 6)">
+            <rect x="6" y="6" width="56" height="52" rx="3" fill="#E2E8F0" stroke="#475569" stroke-width="1.4"/>
+            <rect x="10" y="10" width="48" height="24" rx="1" fill="#0284C7"/>
+            <text x="13" y="20" font-size="5.5" font-weight="bold" fill="white">SKYHAWK /</text>
+            <text x="13" y="29" font-size="6" font-weight="900" fill="#FEF08A">S300 CCTV</text>
+            <circle cx="34" cy="46" r="6" fill="#CBD5E1" stroke="#94A3B8"/>
+          </g>
+        </svg>
+      `
+    };
+  </script>
+  <script>
+    // Generator Renderer
+    function renderCatalogueViews(selectedVal) {
+      const container = document.getElementById('pagesContainer');
+      container.innerHTML = '';
+
+      let targetCats = [];
+      if (selectedVal === 'all') {
+        targetCats = CATALOGUES;
+      } else {
+        const idx = parseInt(selectedVal, 10);
+        targetCats = [CATALOGUES[idx]];
+      }
+
+      targetCats.forEach(cat => {
+        // Page 1: Overview & Commercial Profile
+        const page1 = createPage1(cat);
+        // Page 2: Refined Product Categories & Visual References
+        const page2 = createPage2(cat);
+        // Page 3: Quotation Workflow & Contact Call-to-Action
+        const page3 = createPage3(cat);
+
+        container.appendChild(page1);
+        container.appendChild(page2);
+        container.appendChild(page3);
+      });
+    }
+
+    // Builder: Page 1
+    function createPage1(cat) {
+      const page = document.createElement('div');
+      page.className = 'a4-page';
+      page.innerHTML = `
+        <!-- Page Header -->
+        <div>
+          <div class="flex justify-between items-start border-b-2 border-blue-800 pb-3 mb-4">
+            <div>
+              <div class="text-[9.5px] font-black uppercase tracking-widest text-blue-700">DUNCO GROUP PRODUCT RANGE GUIDE</div>
+              <h1 class="text-2xl font-black text-slate-900 tracking-tight leading-tight mt-0.5">${cat.title}</h1>
+              <p class="text-xs text-slate-600 font-normal mt-0.5">${cat.subtitle}</p>
+            </div>
+            <div class="text-right flex flex-col items-end">
+              <div class="bg-blue-900 text-white text-[9.5px] font-bold px-2 py-0.5 rounded tracking-wide mb-1">
+                SECTOR GUIDE 0${cat.index}
+              </div>
+              <div class="text-[9px] text-slate-400 font-medium">DUNCO SDN BHD &bull; SABAH</div>
+            </div>
+          </div>
+
+          <!-- Prepared For Banner -->
+          <div class="bg-slate-50 border-l-4 border-blue-600 p-3 rounded-r text-[10.5px] text-slate-700 mb-4 leading-relaxed shadow-2xs">
+            <div class="flex items-start gap-2">
+              <i class="fa-solid fa-users text-blue-600 mt-0.5 text-xs"></i>
+              <div>
+                <span class="font-bold text-slate-900">Target Customers:</span> 
+                <span class="text-slate-800 font-medium">${cat.target}</span>.
+                <p class="mt-1 text-slate-600">${cat.summary}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Commercial Notice -->
+          <div class="text-[9px] text-slate-500 bg-amber-50/80 border border-amber-200/90 rounded p-2.5 mb-5 flex items-start gap-2">
+            <i class="fa-solid fa-triangle-exclamation text-amber-600 text-xs mt-0.5 shrink-0"></i>
+            <div>
+              <strong>Important Commercial Notice:</strong> This document is a product-range guide to assist customer selection, not a live stock report or binding price list. Descriptions are drawn from verified AutoCount inventory. Current stock, exact technical specifications, compatibility, and quotation pricing must be confirmed prior to order placement. Suria-specific items are not claimed unless verified.
+            </div>
+          </div>
+
+          <!-- Key Procurement Highlights -->
+          <div class="border border-slate-200 rounded-lg p-3 bg-white mb-4">
+            <h2 class="text-xs font-bold text-slate-900 uppercase tracking-tight mb-2 flex items-center gap-1.5">
+              <i class="fa-solid fa-box-open text-blue-600"></i>
+              Category Highlights Covered in this Guide
+            </h2>
+            <div class="grid grid-cols-2 gap-2 text-[10px] text-slate-700">
+              ${cat.categories.map((c, i) => `
+                <div class="flex items-center gap-1.5 p-1.5 rounded bg-slate-50 border border-slate-100">
+                  <span class="w-4 h-4 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-[8.5px]">${i+1}</span>
+                  <span class="font-semibold text-slate-800 truncate">${c.name}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- Trust & Service Badges -->
+          <div class="grid grid-cols-3 gap-2.5 text-center mt-3">
+            <div class="p-2.5 rounded border border-slate-200 bg-slate-50/50">
+              <div class="text-blue-700 font-bold text-xs"><i class="fa-solid fa-building mr-1"></i> Sabah B2B Support</div>
+              <div class="text-[8.5px] text-slate-500 mt-0.5">Local commercial supply across Kota Kinabalu & Sabah</div>
+            </div>
+            <div class="p-2.5 rounded border border-slate-200 bg-slate-50/50">
+              <div class="text-blue-700 font-bold text-xs"><i class="fa-solid fa-file-invoice-dollar mr-1"></i> Quote-Upon-Request</div>
+              <div class="text-[8.5px] text-slate-500 mt-0.5">Volume-based competitive pricing confirmed per enquiry</div>
+            </div>
+            <div class="p-2.5 rounded border border-slate-200 bg-slate-50/50">
+              <div class="text-blue-700 font-bold text-xs"><i class="fa-solid fa-truck mr-1"></i> Logistics Coordination</div>
+              <div class="text-[8.5px] text-slate-500 mt-0.5">Delivery coordination tailored to business destination</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Page Footer -->
+        <footer class="border-t border-slate-200 pt-2 text-[8.5px] text-slate-500 flex justify-between items-center">
+          <div><span class="font-bold text-slate-700">DUNCO SDN BHD</span> &bull; Product Range Guide &bull; Sabah, Malaysia</div>
+          <div>Prices and availability subject to confirmation</div>
+          <div class="font-semibold text-slate-600">Page 1 of 3</div>
+        </footer>
+      `;
+      return page;
+    }
+
+    // Builder: Page 2 (Validated Categories & High Fidelity Visuals)
+    function createPage2(cat) {
+      const page = document.createElement('div');
+      page.className = 'a4-page';
+      
+      const blocksHtml = cat.categories.map((c, idx) => {
+        const svgContent = TECHNICAL_SVGS[c.visualKey] || TECHNICAL_SVGS.ringfile_covers;
+        return `
+          <div class="border border-slate-200 rounded-lg p-2 bg-slate-50/40 flex flex-row items-center justify-between gap-2.5">
+            <!-- Left Info -->
+            <div class="flex-1 min-w-0 pr-1">
+              <div class="flex items-center gap-1.5 mb-0.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-blue-600 inline-block shrink-0"></span>
+                <h3 class="text-[11px] font-bold text-slate-900 uppercase tracking-tight truncate">${c.name}</h3>
+              </div>
+              <ul class="text-[9px] leading-tight text-slate-700 space-y-0.5 pl-3 list-disc marker:text-blue-500">
+                ${c.items.map(item => `<li><span class="font-medium text-slate-800">${escapeHtml(item)}</span></li>`).join('')}
+              </ul>
+              <div class="mt-1 text-[7.5px] text-slate-400 italic">
+                Exact model selection and volume quotation: upon request.
+              </div>
+            </div>
+
+            <!-- Right Visual -->
+            <div class="w-[160px] h-[86px] shrink-0 bg-white border border-slate-200 rounded-md p-1 flex flex-col items-center justify-between shadow-2xs">
+              <div class="w-full flex-1 flex items-center justify-center overflow-hidden">
+                ${svgContent}
+              </div>
+              <div class="w-full border-t border-slate-100 pt-0.5 text-center">
+                <span class="text-[7px] font-bold uppercase tracking-wider text-slate-600 truncate block px-0.5">
+                  ${c.caption}
+                </span>
+                <span class="text-[6px] text-slate-400 block tracking-tight">Representative illustration</span>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      page.innerHTML = `
+        <div>
+          <!-- Header -->
+          <div class="flex justify-between items-center border-b-2 border-blue-700 pb-2 mb-2">
+            <div>
+              <div class="text-[8.5px] font-black uppercase tracking-widest text-blue-700">DUNCO SDN BHD &bull; PRODUCT MATRIX</div>
+              <h2 class="text-base font-black text-slate-900 tracking-tight leading-none">${cat.title}</h2>
+            </div>
+            <div class="text-right">
+              <span class="text-[8px] bg-slate-100 text-slate-600 border border-slate-200 px-2 py-0.5 rounded font-bold uppercase">
+                Visual Reference Edition
+              </span>
+            </div>
+          </div>
+
+          <!-- Intro Bar -->
+          <div class="bg-blue-50/60 border border-blue-200/60 rounded px-2.5 py-1 mb-2 text-[8.5px] text-blue-900 flex justify-between items-center">
+            <span><strong>Categorization Validation:</strong> Each section represents verified items selected for this industry profile.</span>
+            <span class="font-bold uppercase tracking-wide text-blue-700 text-[7.5px]">Quote Upon Request</span>
+          </div>
+
+          <!-- Product 5-Block Container -->
+          <div class="space-y-1.5">
+            ${blocksHtml}
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="border-t border-slate-200 pt-2 text-[8.5px] text-slate-500 flex justify-between items-center">
+          <div><span class="font-bold text-slate-700">DUNCO SDN BHD</span> &bull; Min Kiang Suria Inventory Reference</div>
+          <div class="text-slate-400 text-[7.5px]">Representative visual references &bull; Actual packaging/brands subject to confirmation</div>
+          <div class="font-semibold text-slate-600">Page 2 of 3</div>
+        </footer>
+      `;
+      return page;
+    }
+
+    // Builder: Page 3 (Quotation Workflow, Terms, Contact Call to Action)
+    function createPage3(cat) {
+      const page = document.createElement('div');
+      page.className = 'a4-page';
+      page.innerHTML = `
+        <div>
+          <!-- Header -->
+          <div class="border-b-2 border-blue-700 pb-2.5 mb-3.5">
+            <div class="text-[9.5px] font-black uppercase tracking-widest text-blue-700">DUNCO COMMERCIAL PROCUREMENT</div>
+            <h2 class="text-xl font-black text-slate-900 tracking-tight leading-none mt-0.5">How to Request a Quotation</h2>
+            <p class="text-xs text-slate-600 mt-0.5">Quick guide to ordering and confirming availability for ${cat.title}</p>
+          </div>
+
+          <!-- 5-Step Process -->
+          <div class="border border-slate-200 rounded-lg p-3 bg-white mb-3 shadow-2xs">
+            <h3 class="text-xs font-bold text-slate-900 uppercase tracking-tight mb-2 flex items-center gap-1.5">
+              <i class="fa-solid fa-list-ol text-blue-600"></i>
+              To help us respond quickly and accurately, please provide:
+            </h3>
+            
+            <div class="space-y-2 text-[10px]">
+              <div class="flex items-start gap-2.5 p-1.5 rounded bg-slate-50 border border-slate-100">
+                <span class="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs shrink-0">1</span>
+                <div>
+                  <strong class="text-slate-800">Product Name or Description:</strong>
+                  <p class="text-slate-600">Include item description or general category needed (e.g. 2D Ring File 40mm, Acer KA272 monitor).</p>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-2.5 p-1.5 rounded bg-slate-50 border border-slate-100">
+                <span class="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs shrink-0">2</span>
+                <div>
+                  <strong class="text-slate-800">Brand / Model Preference:</strong>
+                  <p class="text-slate-600">Specify preferred brand (e.g., ABBA, Artline, Casio, Dahua, Campap) or provide a photo reference.</p>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-2.5 p-1.5 rounded bg-slate-50 border border-slate-100">
+                <span class="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs shrink-0">3</span>
+                <div>
+                  <strong class="text-slate-800">Specification, Size or Grammage:</strong>
+                  <p class="text-slate-600">E.g., A4/F4 size, paper GSM (120g, 160g), thickness (0.15mm vs 0.18mm), or storage capacity.</p>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-2.5 p-1.5 rounded bg-slate-50 border border-slate-100">
+                <span class="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs shrink-0">4</span>
+                <div>
+                  <strong class="text-slate-800">Quantity & Preferred Packaging:</strong>
+                  <p class="text-slate-600">State quantity in pieces, packs, reams, boxes, or cartons for volume tier checking.</p>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-2.5 p-1.5 rounded bg-slate-50 border border-slate-100">
+                <span class="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs shrink-0">5</span>
+                <div>
+                  <strong class="text-slate-800">Delivery Location & Required Date:</strong>
+                  <p class="text-slate-600">Location in Sabah (Kota Kinabalu, Penampang, Sandakan, Tawau, etc.) to evaluate dispatch options.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- B2B Call To Action Box with Contact Placeholders -->
+          <div class="bg-blue-900 text-white rounded-lg p-3.5 mb-3 shadow-md">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-blue-200 mb-1 flex items-center gap-1.5">
+              <i class="fa-solid fa-headset"></i>
+              Need a quotation?
+            </h3>
+            <p class="text-[10px] text-blue-100 mb-3 leading-relaxed">
+              Share your required product, brand/model, specification and quantity. We will check availability and prepare a quotation for you.
+            </p>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[9.5px]">
+              <div class="bg-blue-950/60 p-2 rounded border border-blue-800">
+                <div class="text-blue-300 font-semibold"><i class="fa-solid fa-user mr-1"></i> Sales Contact:</div>
+                <div class="font-bold text-white mt-0.5">[Insert sales contact name]</div>
+              </div>
+              <div class="bg-blue-950/60 p-2 rounded border border-blue-800">
+                <div class="text-blue-300 font-semibold"><i class="fa-brands fa-whatsapp mr-1 text-emerald-400"></i> WhatsApp:</div>
+                <div class="font-bold text-white mt-0.5">[Insert WhatsApp number]</div>
+              </div>
+              <div class="bg-blue-950/60 p-2 rounded border border-blue-800">
+                <div class="text-blue-300 font-semibold"><i class="fa-solid fa-envelope mr-1"></i> Email:</div>
+                <div class="font-bold text-white mt-0.5">[Insert sales email address]</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Policy & Scope Notes -->
+          <div class="bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-[8.5px] text-slate-500 space-y-1">
+            <p><strong>Exclusions & Integrity:</strong> This document intentionally excludes internal item codes, stock quantities, cost/margin columns, and unverified availability. Visual references are clean 2D vector representations to facilitate visual recognition without physical samples.</p>
+            <p><strong>Quotation Validity:</strong> Official quotations issued by DUNCO SDN BHD will specify payment terms, delivery schedule, and pricing validity period based on prevailing stock.</p>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="border-t border-slate-200 pt-2 text-[8.5px] text-slate-500 flex justify-between items-center">
+          <div><span class="font-bold text-slate-700">DUNCO SDN BHD</span> &bull; Commercial Sales Department</div>
+          <div>Quotation available upon request</div>
+          <div class="font-semibold text-slate-600">Page 3 of 3</div>
+        </footer>
+      `;
+      return page;
+    }
+
+    // Modal & Audit Tabs Logic
+    let activeDirFilter = 'all';
+
+    function openModal(id) {
+      document.getElementById(id).classList.remove('hidden');
+      if (id === 'auditModal') {
+        populateAuditTables();
+      } else if (id === 'directoryModal') {
+        renderDirectory();
+      }
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.add('hidden');
+    }
+
+    function setDirFilter(sectorId) {
+      activeDirFilter = sectorId;
+      document.querySelectorAll('.dir-filter-btn').forEach(btn => {
+        btn.classList.remove('bg-emerald-600', 'text-white');
+        btn.classList.add('bg-slate-800', 'text-slate-300');
+      });
+      const activeBtn = document.getElementById(`dirBtn-${sectorId}`);
+      if (activeBtn) {
+        activeBtn.classList.remove('bg-slate-800', 'text-slate-300');
+        activeBtn.classList.add('bg-emerald-600', 'text-white');
+      }
+      renderDirectory();
+    }
+
+    function filterDirectory() {
+      renderDirectory();
+    }
+
+    function renderDirectory() {
+      const container = document.getElementById('directoryContent');
+      const query = (document.getElementById('dirSearchInput')?.value || '').toLowerCase().trim();
+      let html = '';
+
+      const targetCatalogues = activeDirFilter === 'all'
+        ? CATALOGUES
+        : CATALOGUES.filter(c => c.id === activeDirFilter);
+
+      targetCatalogues.forEach(cat => {
+        let catBlocksHtml = '';
+        cat.categories.forEach(group => {
+          const filteredItems = group.items.filter(item =>
+            !query ||
+            item.toLowerCase().includes(query) ||
+            group.name.toLowerCase().includes(query) ||
+            cat.title.toLowerCase().includes(query)
+          );
+
+          if (filteredItems.length > 0) {
+            const svgThumb = TECHNICAL_SVGS[group.visualKey] || TECHNICAL_SVGS.ringfile_covers;
+            catBlocksHtml += `
+              <div class="bg-slate-950 border border-slate-800 rounded-lg p-3.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div class="flex-1">
+                  <div class="text-xs font-bold text-emerald-400 uppercase tracking-wide mb-1.5 flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                    ${escapeHtml(group.name)}
+                  </div>
+                  <ul class="text-[11px] text-slate-300 space-y-1 pl-4 list-disc marker:text-emerald-500">
+                    ${filteredItems.map(item => `<li>${escapeHtml(item)}</li>`).join('')}
+                  </ul>
+                </div>
+                <div class="w-36 h-20 bg-white rounded border border-slate-700 p-1.5 flex flex-col items-center justify-between shrink-0">
+                  <div class="w-full flex-1 flex items-center justify-center overflow-hidden">
+                    ${svgThumb}
+                  </div>
+                  <span class="text-[7px] font-bold text-slate-600 uppercase truncate w-full text-center">${escapeHtml(group.caption)}</span>
+                </div>
+              </div>
+            `;
+          }
+        });
+
+        if (catBlocksHtml) {
+          html += `
+            <div class="border border-slate-800 rounded-xl overflow-hidden bg-slate-900/50">
+              <div class="bg-slate-800/80 px-4 py-2.5 border-b border-slate-700 flex flex-wrap justify-between items-center gap-2">
+                <div>
+                  <span class="text-[10px] font-black uppercase tracking-wider text-blue-400">SECTOR 0${cat.index}</span>
+                  <h3 class="text-sm font-bold text-white">${escapeHtml(cat.title)}</h3>
+                </div>
+                <span class="text-[10px] text-slate-400">Target: ${escapeHtml(cat.target)}</span>
+              </div>
+              <div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-3">
+                ${catBlocksHtml}
+              </div>
+            </div>
+          `;
+        }
+      });
+
+      container.innerHTML = html || `
+        <div class="text-center py-12 text-slate-400">
+          <i class="fa-solid fa-magnifying-glass text-2xl mb-2 text-slate-600"></i>
+          <p class="text-sm font-semibold">No matching items found for "${escapeHtml(query)}"</p>
+          <p class="text-xs text-slate-500 mt-1">Try searching a broader term like "Paper", "Canon", "File", "Marker", or "Monitor".</p>
+        </div>
+      `;
+    }
+
+    function switchAuditTab(tabId) {
+      document.querySelectorAll('.audit-tab-pane').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.audit-tab-pane').forEach(el => el.classList.remove('block'));
+      document.querySelectorAll('.audit-tab-btn').forEach(btn => {
+        btn.classList.remove('border-blue-500', 'text-white');
+        btn.classList.add('border-transparent', 'text-slate-400');
+      });
+
+      document.getElementById(tabId).classList.remove('hidden');
+      document.getElementById(tabId).classList.add('block');
+      document.getElementById(`btn-${tabId}`).classList.add('border-blue-500', 'text-white');
+      document.getElementById(`btn-${tabId}`).classList.remove('border-transparent', 'text-slate-400');
+    }
+
+    function populateAuditTables() {
+      // Table 1: Mapping Matrix
+      const tbody = document.getElementById('auditTableBody');
+      if (tbody.children.length === 0) {
+        let html = '';
+        CATALOGUES.forEach(cat => {
+          cat.categories.forEach(c => {
+            c.items.forEach(item => {
+              html += `
+                <tr class="hover:bg-slate-800/40">
+                  <td class="p-2 font-medium text-slate-400">${cat.title}</td>
+                  <td class="p-2 font-bold text-blue-400">${c.name}</td>
+                  <td class="p-2 font-mono text-[10px] text-slate-200">${escapeHtml(item)}</td>
+                  <td class="p-2"><span class="px-1.5 py-0.5 rounded text-[9px] bg-emerald-950 text-emerald-400 border border-emerald-800">Verified AutoCount</span></td>
+                </tr>
+              `;
+            });
+          });
+        });
+        tbody.innerHTML = html;
+      }
+
+      // Tab 2: Image Audit
+      const imgGrid = document.getElementById('imageAuditGrid');
+      if (imgGrid.children.length === 0) {
+        const visualAudits = [
+          { key: "paper_notebooks", label: "A4 Copy Paper, Exercise Books & Sticky Notes", status: "Representative 2D Vector Reference", note: "Illustrates Double A/PaperOne 500-sheet reams, Write-On exercise books & sticky pads" },
+          { key: "pens_markers", label: "Faber-Castell, Pilot, Pentel & Stabilo Pens/Markers", status: "Representative 2D Vector Reference", note: "Illustrates Gel/Ball pens, Stabilo/Textliner highlighters & 2B exam pencils" },
+          { key: "craft_paper", label: "Campap/Sakira Colour Paper, Card Stock & Art Supplies", status: "Representative 2D Vector Reference", note: "Illustrates multi-colour paper fan & 120g–210g card ream packaging" },
+          { key: "lever_arch", label: "Bindee/ABBA 3\" Lever Arch & Kidario Clear Books", status: "Representative 2D Vector Reference", note: "Illustrates 3\" F4 lever arch box file and F4/A4 folders" },
+          { key: "ringfile_covers", label: "ABBA/K2 White PVC 2D Ring Files & Binding Covers", status: "Representative 2D Vector Reference", note: "Illustrates 25mm/40mm/50mm 2D ring binders & clear binding sleeves" },
+          { key: "labeller_ribbon", label: "MX-5500/6600 Price Labellers & Self-Adhesive Labels", status: "Representative 2D Vector Reference", note: "Illustrates handheld pricing gun & thermal/sticker label rolls" },
+          { key: "casio_calc", label: "Casio/Canon Calculators, Ledgers & Accounting Vouchers", status: "Representative 2D Vector Reference", note: "Illustrates printing calculator with roll arm & accounting ledger books" },
+          { key: "printers_toners", label: "Canon, Epson, HP & Brother Printers & Original Toners/Inks", status: "Representative 2D Vector Reference", note: "Illustrates business laser/inktank printer, toner cartridge & CMYK ink bottles" },
+          { key: "pc_ups", label: "Business Desktops, Laptops, UPS & Microsoft/AutoCount", status: "Representative 2D Vector Reference", note: "Illustrates workstation display, Line-Interactive UPS & software licensing" },
+          { key: "photo_media", label: "Glossy/Matte Photo Paper & Printable Sticker Media", status: "Representative 2D Vector Reference", note: "Illustrates A4/A3 high-gloss photo sheets & peelable sticker paper" },
+          { key: "binding_finishing", label: "Laminators, Binding Machines, Combs & Paper Cutters", status: "Representative 2D Vector Reference", note: "Illustrates A3/A4 laminator/trimmer and plastic/wire binding combs" },
+          { key: "teaching_whiteboard", label: "Magnetic Whiteboards, Markers & Certificate Folders", status: "Representative 2D Vector Reference", note: "Illustrates classroom magnetic whiteboard on stand & Sijil folder" },
+          { key: "sports_pe", label: "Molten/Mikasa Balls, Yonex/RSL Badminton & PE Cones", status: "Representative 2D Vector Reference", note: "Illustrates basketball/volleyball, shuttlecock & training marker cone" },
+          { key: "packaging_tapes", label: "OPP Packing Tapes, Fragile/Caution Tapes & Sealers", status: "Representative 2D Vector Reference", note: "Illustrates 48mm brown OPP tape roll, Fragile tape & Awas tape" },
+          { key: "barcode_scanner", label: "Zebra Barcode Scanners, Thermal Printers & Shipping Labels", status: "Representative 2D Vector Reference", note: "Illustrates handheld 1D/2D barcode scanner & 100x150mm barcode label" },
+          { key: "ncr_books", label: "Campap NCR DO/PO/Invoice Books & Continuous Computer Forms", status: "Representative 2D Vector Reference", note: "Illustrates triplicate carbonless NCR pads & multi-ply pin-fed forms" },
+          { key: "projector_monitor", label: "Epson/Acer Projectors, Interactive Panels & IPS Monitors", status: "Representative 2D Vector Reference", note: "Illustrates FHD IPS workstation monitor & WXGA/XGA projector" },
+          { key: "cctv_storage", label: "Dahua/Hikvision CCTV NVRs, PoE Switches & Surveillance HDDs", status: "Representative 2D Vector Reference", note: "Illustrates 1U NVR recorder, PoE switch & Seagate SkyHawk / Toshiba S300 HDD" }
+        ];
+
+        imgGrid.innerHTML = visualAudits.map(item => `
+          <div class="border border-slate-800 rounded p-2.5 bg-slate-950 flex items-center gap-3">
+            <div class="w-16 h-12 bg-white rounded border border-slate-700 p-1 flex items-center justify-center shrink-0">
+              ${TECHNICAL_SVGS[item.key] || ''}
+            </div>
+            <div>
+              <div class="font-bold text-white text-[11px]">${item.label}</div>
+              <div class="text-[9.5px] text-blue-400 font-semibold">${item.status}</div>
+              <div class="text-[9px] text-slate-400 mt-0.5">${item.note}</div>
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+
+    function switchCatalog(val) {
+      renderCatalogueViews(val);
+    }
+
+    function escapeHtml(string) {
+      return String(string)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    // Initialize application
+    window.onload = function() {
+      renderCatalogueViews('0');
+    };
+  </script>
+</body>
+</html>
